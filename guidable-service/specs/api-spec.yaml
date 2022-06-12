@@ -1,0 +1,67 @@
+openapi: 3.0.0
+info:
+  title: Guidable API
+  description: API Provided by guidable.in.
+  version: '20220601'
+servers:
+  - url: /20220101
+paths:
+  /roadmaps:
+    get:
+      summary: Get List of Roadmaps
+      operationId: getRoadMap
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CreateRoadmapResponse'
+    post:
+      summary: Create a Roadmap
+      operationId: createRoadmap
+      requestBody:
+        description: Roadmap details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRoadmapDetail'
+        required: true
+      responses:
+        200:
+          description: Roadmap Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRoadmapResponse'
+      x-codegen-request-body-name: book
+components:
+  schemas:
+    CreateRoadmapResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '12345'
+        name:
+          type: string
+          example: "Journey to ML Engineer"
+        views:
+          type: integer
+          example: 100
+        stars:
+          type: integer
+          example: 42
+
+
+    CreateRoadmapDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '12345'
+        name:
+          type: string
+          example: "Journey to ML Engineer"
