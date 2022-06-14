@@ -8,6 +8,9 @@ import in.guidable.repositories.RoadmapRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class RoadmapService {
 
@@ -22,5 +25,14 @@ public class RoadmapService {
     {
         Roadmap roadmap =  roadmapRepo.save(RoadmapConverter.toRoadmapEntity(createRoadmapDetail));
         return RoadmapConverter.toRoadmapResponse(roadmap);
+    }
+
+    public List<CreateRoadmapResponse> listRoadmap() {
+         return roadmapRepo
+                 .findAll()
+                 .stream()
+                 .map(RoadmapConverter::toRoadmapResponse)
+                 .collect(Collectors.toList());
+
     }
 }

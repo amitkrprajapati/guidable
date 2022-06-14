@@ -4,7 +4,7 @@ info:
   description: API Provided by guidable.in.
   version: '20220601'
 servers:
-  - url: /20220101
+  - url: http://localhost/8080/
 paths:
   /roadmaps:
     get:
@@ -39,23 +39,6 @@ paths:
       x-codegen-request-body-name: book
 components:
   schemas:
-    CreateRoadmapResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          example: '12345'
-        name:
-          type: string
-          example: "Journey to ML Engineer"
-        views:
-          type: integer
-          example: 100
-        stars:
-          type: integer
-          example: 42
-
-
     CreateRoadmapDetail:
       type: object
       properties:
@@ -65,3 +48,76 @@ components:
         name:
           type: string
           example: "Journey to ML Engineer"
+        description:
+          type: string
+          example: "Explore this roadmap to be a ML engineer"
+        parentId:
+          type: string
+          example: "id-of-roadmap-collection"
+        checkpoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/Checkpoints"
+        originalAuthor:
+          type: string
+        updatedBy:
+          type: string
+        isSharable:
+          type: boolean
+
+
+    CreateRoadmapResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '12345'
+        name:
+          type: string
+          example: "Journey to ML Engineer"
+        description:
+          type: string
+          example: "Explore this roadmap to be a ML engineer"
+        parentId:
+          type: string
+          example: "id-of-roadmap-collection"
+        checkpoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/Checkpoints"
+        originalAuthor:
+          type: string
+        updatedBy:
+          type: string
+        publicMetadata:
+          type: object
+          properties:
+            isSharable:
+              type: boolean
+            publicLinkKey:
+              type: string
+        views:
+          type: integer
+          example: 100
+        stars:
+          type: integer
+          example: 42
+
+    Checkpoints:
+      type: object
+      properties:
+        checkpointKey:
+          type: string
+        name:
+          type: string
+        shortDescription:
+          type: string
+        detailedDescription:
+          type: string
+        quickLink:
+          type: string
+        isComplete:
+          type: boolean
+
+
+
