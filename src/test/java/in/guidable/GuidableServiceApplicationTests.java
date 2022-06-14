@@ -1,4 +1,4 @@
-package in.guidable.service;
+package in.guidable;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
