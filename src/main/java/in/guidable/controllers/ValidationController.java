@@ -11,7 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -42,6 +44,20 @@ public class ValidationController implements ValidationApi {
         }
         return new ResponseEntity<>(jwtUtil.generateToken(authRequest.getUserName()), HttpStatus.OK);
     }
+    /*
+    * Demo to access any api after login
+    *  @GetMapping("/test")
+    public void test(@RequestHeader("Authorization") String token){
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+            String userName = jwtUtil.extractUsername(token);
+            System.out.println("username is: "+userName);
+        }
+    }
+    * */
+
+
+
 
 
 }

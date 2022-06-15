@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class GlobalExceptions {
 
     @ExceptionHandler(value = CustomerPresnetException.class)
-    public ResponseEntity<?> handleCustomerPresntExcption(CustomerPresnetException customerPresnetException){
+    public ResponseEntity<String> handleCustomerPresntExcption(CustomerPresnetException e){
 
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = InvalidCredentialsException.class)
-    public ResponseEntity<?> handleCustomerPresntExcption(InvalidCredentialsException invalidCredentialsException){
+    public ResponseEntity<String> handleCustomerPresntExcption(InvalidCredentialsException e){
 
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
     }
 }
