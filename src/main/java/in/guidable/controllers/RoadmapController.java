@@ -26,13 +26,12 @@ public class RoadmapController implements RoadmapsApi {
     }
 
     @Override
-    public ResponseEntity<List<CreateRoadmapResponse>> getRoadMap() {
-        return ResponseEntity.ok(
-                new ArrayList<>()
-                        {{
-                            add(new CreateRoadmapResponse()
-                                .id("default")
-                                .name("Some-journey"));
-                        }});
+    public ResponseEntity<List<CreateRoadmapResponse>> getRoadMaps() {
+        return ResponseEntity.ok(roadmapService.listRoadmap());
+    }
+
+    @Override
+    public ResponseEntity<CreateRoadmapResponse> getRoadMap(String roadmapId) {
+        return ResponseEntity.ok(roadmapService.getRoadMap(roadmapId));
     }
 }
