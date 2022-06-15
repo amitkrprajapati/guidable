@@ -21,16 +21,15 @@ public class RoadmapConverter {
                 .build();
     }
 
-    public static CreateRoadmapResponse toRoadmapResponse(Roadmap roadmap) {
+    public static CreateRoadmapResponse toRoadmapResponse(Roadmap roadmap, CreateRoadmapResponsePublicMetadata publicMetadata) {
         return new CreateRoadmapResponse()
+                .id(roadmap.getId())
                 .name(roadmap.getName())
                 .parentId(roadmap.getParentId())
                 .description(roadmap.getDescription())
                 .originalAuthor(roadmap.getOriginalAuthor())
                 .updatedBy(roadmap.getUpdatedBy())
                 .checkpoints(roadmap.getCheckpoints().stream().map(CheckpointConverter::toCheckPointModel).collect(Collectors.toList()))
-                .publicMetadata(
-                        new CreateRoadmapResponsePublicMetadata()
-                        .isSharable(roadmap.getIsSharable()));
+                .publicMetadata(publicMetadata);
     }
 }

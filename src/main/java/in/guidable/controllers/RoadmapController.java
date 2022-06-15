@@ -26,7 +26,12 @@ public class RoadmapController implements RoadmapsApi {
     }
 
     @Override
-    public ResponseEntity<List<CreateRoadmapResponse>> getRoadMap() {
+    public ResponseEntity<List<CreateRoadmapResponse>> getRoadMaps() {
         return ResponseEntity.ok(roadmapService.listRoadmap());
+    }
+
+    @Override
+    public ResponseEntity<CreateRoadmapResponse> getRoadMap(String roadmapId) {
+        return ResponseEntity.ok(roadmapService.getRoadMap(roadmapId));
     }
 }

@@ -29,7 +29,7 @@ public class Roadmap implements SharableResource{
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
             name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
+            strategy = "in.guidable.repositories.generator.CustomUUIDGenerator"
     )
     private String id;
     private String name;

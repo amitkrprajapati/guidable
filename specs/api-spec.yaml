@@ -4,14 +4,14 @@ info:
   description: API Provided by guidable.in.
   version: '20220601'
 servers:
-  - url: http://localhost/8080/
+  - url: http://localhost/8081
 paths:
   /roadmaps:
     get:
       summary: Get List of Roadmaps
-      operationId: getRoadMap
+      operationId: getRoadMaps
       responses:
-        200:
+        201:
           description: successful operation
           content:
             application/json:
@@ -36,7 +36,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateRoadmapResponse'
-      x-codegen-request-body-name: book
+      x-codegen-request-body-name: roadmaps
+  /roadmaps/{roadmapId}:
+    get:
+      parameters:
+        - name: roadmapId
+          in: path
+          required: true
+          schema:
+            type: string
+      summary: Get List of Roadmaps
+      operationId: getRoadMap
+      responses:
+        201:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRoadmapResponse'
+
 components:
   schemas:
     CreateRoadmapDetail:
@@ -96,12 +114,14 @@ components:
               type: boolean
             publicLinkKey:
               type: string
-        views:
-          type: integer
-          example: 100
-        stars:
-          type: integer
-          example: 42
+            views:
+              type: integer
+              format: int64
+              example: 100
+            likes:
+              type: integer
+              format: int64
+              example: 42
 
     Checkpoints:
       type: object
