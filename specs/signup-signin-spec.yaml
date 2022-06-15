@@ -4,9 +4,9 @@ info:
   description: API Provided by guidable.in.
   version: '20220601'
 servers:
-  - url: /guidable/
+  - url: http://localhost:8081
 paths:
-  /signup:
+  /validation/signup:
     post:
       summary: Create a Customer Signup
       operationId: customerSignUp
@@ -23,7 +23,7 @@ paths:
         400:
           description: Username Already present
 
-  /authenticate:
+  /validation/authenticate:
     post:
       summary: Create a Customer Login
       operationId: customerLogin
