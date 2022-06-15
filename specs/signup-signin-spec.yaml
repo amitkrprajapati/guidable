@@ -1,0 +1,61 @@
+openapi: 3.0.0
+info:
+  title: signup API
+  description: API Provided by guidable.in.
+  version: '20220601'
+servers:
+  - url: http://localhost:8081
+paths:
+  /validation/signup:
+    post:
+      summary: Create a Customer Signup
+      operationId: customerSignUp
+      requestBody:
+        description: Signup details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpDTO'
+        required: true
+      responses:
+        201:
+          description: Roadmap Created
+        400:
+          description: Username Already present
+
+  /validation/authenticate:
+    post:
+      summary: Create a Customer Login
+      operationId: customerLogin
+      requestBody:
+        description: Login details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+        required: true
+      responses:
+        200:
+          description: Login Success
+          content:
+            application/json:
+              schema:
+                type: string
+components:
+  schemas:
+    SignUpDTO:
+      type: object
+      properties:
+        customerUserName:
+          type: string
+        customerEmail:
+          type: string
+        customerPassword:
+          type: string
+    AuthRequest:
+      type: object
+      properties:
+        userName:
+          type: string
+        password:
+          type: string
