@@ -4,7 +4,7 @@ info:
   description: API Provided by guidable.in.
   version: '20220601'
 servers:
-  - url: http://localhost:8081
+  - url: /guidable/
 paths:
   /signup:
     post:

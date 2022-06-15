@@ -15,4 +15,10 @@ public class GlobalExceptions {
 
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(value = InvalidCredentialsException.class)
+    public ResponseEntity<?> handleCustomerPresntExcption(InvalidCredentialsException invalidCredentialsException){
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 }

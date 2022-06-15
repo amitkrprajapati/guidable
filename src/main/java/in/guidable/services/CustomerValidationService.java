@@ -6,17 +6,16 @@ import in.guidable.model.SignUpDTO;
 import in.guidable.repositories.CustomerRepo;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CustomerLoginService {
+public class CustomerValidationService {
 
     private final CustomerRepo customerRepo;
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public void verifyAndSaveCustomer(SignUpDTO signUpDTO){
         if(customerRepo.findByCustomerUserName(signUpDTO.getCustomerUserName()).isPresent()){
@@ -27,6 +26,7 @@ public class CustomerLoginService {
         }
 
                 try {
+                    signUpDTO.setCustomerPassword(passwordEncoder.encode(signUpDTO.getCustomerPassword()));
                     customerRepo.save(modelMapper.map(signUpDTO, Customer.class));
                 }
                 catch (Exception e){

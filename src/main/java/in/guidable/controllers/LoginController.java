@@ -1,6 +1,7 @@
 package in.guidable.controllers;
 
 import in.guidable.api.AuthenticateApi;
+import in.guidable.exceptions.InvalidCredentialsException;
 import in.guidable.jwt.JwtUtil;
 import in.guidable.model.AuthRequest;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class LoginController implements AuthenticateApi {
             );
         } catch (Exception ex) {
             ex.printStackTrace();
-            //throw new Exception("inavalid username/password");
+            throw new InvalidCredentialsException("inavalid username/password");
         }
         return new ResponseEntity<>(jwtUtil.generateToken(authRequest.getUserName()), HttpStatus.OK);
     }
