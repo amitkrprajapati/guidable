@@ -54,7 +54,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateRoadmapResponse'
-
+  /roadmaps/{roadmapId}/actions/makeSharable:
+    post:
+      parameters:
+        - name: roadmapId
+          in: path
+          required: true
+          schema:
+            type: string
+      summary: Create a sharable public link
+      operationId: createSharableLink
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRoadmapResponse'
 components:
   schemas:
     CreateRoadmapDetail:
@@ -108,20 +124,7 @@ components:
         updatedBy:
           type: string
         publicMetadata:
-          type: object
-          properties:
-            isSharable:
-              type: boolean
-            publicLinkKey:
-              type: string
-            views:
-              type: integer
-              format: int64
-              example: 100
-            likes:
-              type: integer
-              format: int64
-              example: 42
+          $ref: "#/components/schemas/SharableResourcePublicMetadata"
 
     Checkpoints:
       type: object
@@ -139,5 +142,20 @@ components:
         isComplete:
           type: boolean
 
+    SharableResourcePublicMetadata:
+      type: object
+      properties:
+        isSharable:
+          type: boolean
+        publicLinkKey:
+          type: string
+        views:
+          type: integer
+          format: int64
+          example: 100
+        likes:
+          type: integer
+          format: int64
+          example: 42
 
 
