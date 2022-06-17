@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.Optional;
 
 
 @Repository
@@ -16,6 +17,9 @@ public interface SharableLinkKeyResourceMapRepo extends JpaRepository<SharableLi
     @Modifying
     @Query("UPDATE SharableLinkKeyResourceMap linkMap SET linkMap.isEnabled = :status where linkMap.resourceId= :resourceId")
     void changeLinkStatus(@Param("resourceId") String resourceId, Boolean status);
+
+    Optional<SharableLinkKeyResourceMap> findByLinkKey(String linkKey);
+
     Collection<SharableLinkKeyResourceMap> findAllByLinkKey(String linkKey);
 
     default String generateUniqueLinkKey() throws Exception {
