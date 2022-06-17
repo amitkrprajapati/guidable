@@ -1,0 +1,228 @@
+{
+	"info": {
+		"_postman_id": "649028b7-4ab5-49a8-b804-37dd050252a9",
+		"name": "N_DEV",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Signup",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"customerUserName\": \"Amit\",\n  \"customerEmail\": \"amit@gmail.com\",\n  \"customerPassword\": \"amit123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{server}}/validation/signup",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"validation",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SignIn",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {",
+							"    var token = responseBody;",
+							"    postman.setEnvironmentVariable(\"authToken\", token);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userName\": \"Amit\",\n  \"password\": \"amit123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{server}}/validation/authenticate",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"validation",
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateRoadmap",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {",
+							"    var jsonData = JSON.parse(responseBody);",
+							"    postman.setEnvironmentVariable(\"roadmapId\", jsonData.id);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": \"12345\",\n  \"name\": \"Journey to ML Engineer\",\n  \"description\": \"Explore this roadmap to be a ML engineer\",\n  \"parentId\": \"id-of-roadmap-collection\",\n  \"checkpoints\": [\n    {\n      \"checkpointKey\": \"string\",\n      \"name\": \"string\",\n      \"shortDescription\": \"string\",\n      \"detailedDescription\": \"string\",\n      \"quickLink\": \"string\",\n      \"isComplete\": true\n    }\n  ],\n  \"originalAuthor\": \"string\",\n  \"updatedBy\": \"string\",\n  \"isSharable\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{server}}/roadmaps",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"roadmaps"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetRoadmap",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "ActionCreateLinkKey",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{server}}/roadmaps/{{roadmapId}}/actions/makeSharable",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"roadmaps",
+						"{{roadmapId}}",
+						"actions",
+						"makeSharable"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ActionDisableLinkKey",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{server}}/roadmaps/{{roadmapId}}/actions/enableShareLink",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"roadmaps",
+						"{{roadmapId}}",
+						"actions",
+						"enableShareLink"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateRoadmap",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Journey to ML Engineer\",\n  \"description\": \"Explore this roadmap to be a ML engineer\",\n  \"checkpoints\": [\n    {\n      \"checkpointKey\": \"string\",\n      \"name\": \"Learn Statistics\",\n      \"shortDescription\": \"string\",\n      \"detailedDescription\": \"string\",\n      \"quickLink\": \"string\",\n      \"isComplete\": true\n    },\n    {\n      \"checkpointKey\": \"string\",\n      \"name\": \"Learn Python\",\n      \"shortDescription\": \"string\",\n      \"detailedDescription\": \"string\",\n      \"quickLink\": \"string\",\n      \"isComplete\": true\n    },\n    {\n      \"checkpointKey\": \"string\",\n      \"name\": \"Learn Plotting lib\",\n      \"shortDescription\": \"string\",\n      \"detailedDescription\": \"string\",\n      \"quickLink\": \"string\",\n      \"isComplete\": true\n    }\n  ],\n  \"isSharable\": false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{server}}/roadmaps/{{roadmapId}}",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"roadmaps",
+						"{{roadmapId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{authToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
