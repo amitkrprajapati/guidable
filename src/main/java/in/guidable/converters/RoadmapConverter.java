@@ -15,8 +15,6 @@ public class RoadmapConverter {
                 .name(createRoadmapDetail.getName())
                 .parentId(createRoadmapDetail.getParentId())
                 .description(createRoadmapDetail.getDescription())
-                .originalAuthor(createRoadmapDetail.getOriginalAuthor())
-                .updatedBy(createRoadmapDetail.getUpdatedBy())
                 .checkpoints(createRoadmapDetail.getCheckpoints().stream().map(CheckpointConverter::toCheckPointEntity).collect(Collectors.toList()))
                 .publicMetadata(PublicMetadata
                         .builder()

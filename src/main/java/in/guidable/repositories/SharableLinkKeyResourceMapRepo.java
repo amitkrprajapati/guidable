@@ -14,8 +14,8 @@ import java.util.Collection;
 @Repository
 public interface SharableLinkKeyResourceMapRepo extends JpaRepository<SharableLinkKeyResourceMap, Long> {
     @Modifying
-    @Query("UPDATE SharableLinkKeyResourceMap linkMap SET linkMap.isEnabled = true where linkMap.resourceId= :resourceId")
-    void enableShareLinkOfResource(@Param("resourceId") String resourceId);
+    @Query("UPDATE SharableLinkKeyResourceMap linkMap SET linkMap.isEnabled = :status where linkMap.resourceId= :resourceId")
+    void changeLinkStatus(@Param("resourceId") String resourceId, Boolean status);
     Collection<SharableLinkKeyResourceMap> findAllByLinkKey(String linkKey);
 
     default String generateUniqueLinkKey() throws Exception {

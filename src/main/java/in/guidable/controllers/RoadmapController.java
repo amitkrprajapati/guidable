@@ -3,13 +3,12 @@ package in.guidable.controllers;
 import in.guidable.api.RoadmapsApi;
 import in.guidable.model.CreateRoadmapDetail;
 import in.guidable.model.CreateRoadmapResponse;
+import in.guidable.model.UpdateRoadmapDetail;
 import in.guidable.services.RoadmapService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -33,7 +32,17 @@ public class RoadmapController implements RoadmapsApi {
     }
 
     @Override
-    public ResponseEntity<CreateRoadmapResponse> createSharableLink(String roadmapId) {
-        return ResponseEntity.ok(roadmapService.createSharableLink(roadmapId));
+    public ResponseEntity<CreateRoadmapResponse> updateRoadmap(String roadmapId, UpdateRoadmapDetail updataRoadmapDetail) {
+        return ResponseEntity.ok(roadmapService.updateRoadmap(roadmapId, updataRoadmapDetail));
+    }
+
+    @Override
+    public ResponseEntity<CreateRoadmapResponse> enableShareLink(String roadmapId) {
+        return ResponseEntity.ok(roadmapService.enableShareLink(roadmapId));
+    }
+
+    @Override
+    public ResponseEntity<CreateRoadmapResponse> disableShareLink(String roadmapId) {
+        return ResponseEntity.ok(roadmapService.disableShareLink(roadmapId));
     }
 }

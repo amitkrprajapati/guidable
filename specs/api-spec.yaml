@@ -54,7 +54,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateRoadmapResponse'
-  /roadmaps/{roadmapId}/actions/makeSharable:
+    put:
+      parameters:
+        - name: roadmapId
+          in: path
+          required: true
+          schema:
+            type: string
+      summary: Update a Roadmap
+      operationId: updateRoadmap
+      requestBody:
+        description: Roadmap details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRoadmapDetail'
+        required: true
+      responses:
+        200:
+          description: Roadmap updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRoadmapResponse'
+      x-codegen-request-body-name: roadmaps
+  /roadmaps/{roadmapId}/actions/enableShareLink:
     post:
       parameters:
         - name: roadmapId
@@ -63,7 +87,24 @@ paths:
           schema:
             type: string
       summary: Create a sharable public link
-      operationId: createSharableLink
+      operationId: enableShareLink
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRoadmapResponse'
+  /roadmaps/{roadmapId}/actions/disableShareLink:
+    post:
+      parameters:
+        - name: roadmapId
+          in: path
+          required: true
+          schema:
+            type: string
+      summary: Mark resource as private
+      operationId: disableShareLink
       responses:
         200:
           description: successful operation
@@ -76,9 +117,6 @@ components:
     CreateRoadmapDetail:
       type: object
       properties:
-        id:
-          type: string
-          example: '12345'
         name:
           type: string
           example: "Journey to ML Engineer"
@@ -92,10 +130,22 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Checkpoints"
-        originalAuthor:
+        isSharable:
+          type: boolean
+
+    UpdateRoadmapDetail:
+      type: object
+      properties:
+        name:
           type: string
-        updatedBy:
+          example: "Journey to ML Engineer"
+        description:
           type: string
+          example: "Explore this roadmap to be a ML engineer"
+        checkpoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/Checkpoints"
         isSharable:
           type: boolean
 
