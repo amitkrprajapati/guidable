@@ -6,6 +6,7 @@ import in.guidable.model.CreateRoadmapResponse;
 import in.guidable.services.RoadmapService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class RoadmapController implements RoadmapsApi {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<CreateRoadmapResponse> createRoadmap(CreateRoadmapDetail createRoadmapDetail) {
         return ResponseEntity.ok(roadmapService.createRoadmap(createRoadmapDetail));
     }

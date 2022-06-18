@@ -9,6 +9,7 @@ import in.guidable.services.CustomerValidationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,9 +45,9 @@ public class ValidationController implements ValidationApi {
         }
         return new ResponseEntity<>(jwtUtil.generateToken(authRequest.getUserName()), HttpStatus.OK);
     }
-    /*
-    * Demo to access any api after login
-    *  @GetMapping("/test")
+    //* Demo to access any api after login
+      @GetMapping("/test")
+      @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void test(@RequestHeader("Authorization") String token){
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
@@ -54,7 +55,7 @@ public class ValidationController implements ValidationApi {
             System.out.println("username is: "+userName);
         }
     }
-    * */
+
 
 
 
