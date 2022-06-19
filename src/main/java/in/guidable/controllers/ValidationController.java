@@ -45,7 +45,7 @@ public class ValidationController implements ValidationApi {
         }
         return new ResponseEntity<>(jwtUtil.generateToken(authRequest.getUserName()), HttpStatus.OK);
     }
-    //* Demo to access any api after login
+    /** Demo to access any api after login
       @GetMapping("/test")
       @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void test(@RequestHeader("Authorization") String token){
@@ -55,6 +55,7 @@ public class ValidationController implements ValidationApi {
             System.out.println("username is: "+userName);
         }
     }
+     **/
 
 
 
