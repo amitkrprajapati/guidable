@@ -22,7 +22,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig{
 
     private final JwtFilter jwtFilter;
-    private final static String[] ALLOWED_URLS = {"/h2-console/**","/favicon.ico/**","/validation/**","/h2/**"};
+
+    private final static String[] ALLOWED_URLS = {"/h2-console/**","/favicon.ico/**","/validation/**", "/swagger-ui/**", "/v3/api-docs/**"};
+
 
 
     @Bean
@@ -43,6 +45,7 @@ public class SecurityConfig{
                 .and().exceptionHandling().and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        http.headers().frameOptions().disable();
         return http.build();
     }
 }

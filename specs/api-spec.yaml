@@ -4,14 +4,14 @@ info:
   description: API Provided by guidable.in.
   version: '20220601'
 servers:
-  - url: /20220101
+  - url: http://localhost/8081
 paths:
   /roadmaps:
     get:
       summary: Get List of Roadmaps
-      operationId: getRoadMap
+      operationId: getRoadMaps
       responses:
-        200:
+        201:
           description: successful operation
           content:
             application/json:
@@ -36,9 +36,120 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateRoadmapResponse'
-      x-codegen-request-body-name: book
+      x-codegen-request-body-name: roadmaps
+  /roadmaps/{roadmapId}:
+    get:
+      parameters:
+        - name: roadmapId
+          in: path
+          required: true
+          schema:
+            type: string
+      summary: Get List of Roadmaps
+      operationId: getRoadMap
+      responses:
+        201:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRoadmapResponse'
+    put:
+      parameters:
+        - name: roadmapId
+          in: path
+          required: true
+          schema:
+            type: string
+      summary: Update a Roadmap
+      operationId: updateRoadmap
+      requestBody:
+        description: Roadmap details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRoadmapDetail'
+        required: true
+      responses:
+        200:
+          description: Roadmap updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRoadmapResponse'
+      x-codegen-request-body-name: roadmaps
+  /roadmaps/{roadmapId}/actions/enableShareLink:
+    post:
+      parameters:
+        - name: roadmapId
+          in: path
+          required: true
+          schema:
+            type: string
+      summary: Create a sharable public link
+      operationId: enableShareLink
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRoadmapResponse'
+  /roadmaps/{roadmapId}/actions/disableShareLink:
+    post:
+      parameters:
+        - name: roadmapId
+          in: path
+          required: true
+          schema:
+            type: string
+      summary: Mark resource as private
+      operationId: disableShareLink
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRoadmapResponse'
 components:
   schemas:
+    CreateRoadmapDetail:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Journey to ML Engineer"
+        description:
+          type: string
+          example: "Explore this roadmap to be a ML engineer"
+        parentId:
+          type: string
+          example: "id-of-roadmap-collection"
+        checkpoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/Checkpoints"
+        isSharable:
+          type: boolean
+
+    UpdateRoadmapDetail:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Journey to ML Engineer"
+        description:
+          type: string
+          example: "Explore this roadmap to be a ML engineer"
+        checkpoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/Checkpoints"
+        isSharable:
+          type: boolean
+
+
     CreateRoadmapResponse:
       type: object
       properties:
@@ -48,20 +159,53 @@ components:
         name:
           type: string
           example: "Journey to ML Engineer"
+        description:
+          type: string
+          example: "Explore this roadmap to be a ML engineer"
+        parentId:
+          type: string
+          example: "id-of-roadmap-collection"
+        checkpoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/Checkpoints"
+        originalAuthor:
+          type: string
+        updatedBy:
+          type: string
+        publicMetadata:
+          $ref: "#/components/schemas/SharableResourcePublicMetadata"
+
+    Checkpoints:
+      type: object
+      properties:
+        checkpointKey:
+          type: string
+        name:
+          type: string
+        shortDescription:
+          type: string
+        detailedDescription:
+          type: string
+        quickLink:
+          type: string
+        isComplete:
+          type: boolean
+
+    SharableResourcePublicMetadata:
+      type: object
+      properties:
+        isSharable:
+          type: boolean
+        publicLinkKey:
+          type: string
         views:
           type: integer
+          format: int64
           example: 100
-        stars:
+        likes:
           type: integer
+          format: int64
           example: 42
 
 
-    CreateRoadmapDetail:
-      type: object
-      properties:
-        id:
-          type: string
-          example: '12345'
-        name:
-          type: string
-          example: "Journey to ML Engineer"

@@ -41,7 +41,7 @@ public class ValidationController implements ValidationApi {
             );
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw new InvalidCredentialsException("inavalid username/password");
+            throw new InvalidCredentialsException("invalid username/password");
         }
         return new ResponseEntity<>(jwtUtil.generateToken(authRequest.getUserName()), HttpStatus.OK);
     }
