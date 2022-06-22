@@ -1,60 +1,75 @@
 package in.guidable.controllers;
 
 import in.guidable.api.ValidationApi;
-import in.guidable.exceptions.InvalidCredentialsException;
+import in.guidable.entities.Customer;
+import in.guidable.event.RegistrationCompleteEvent;
 import in.guidable.jwt.JwtUtil;
 import in.guidable.model.AuthRequest;
 import in.guidable.model.SignUpDTO;
 import in.guidable.services.CustomerValidationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequiredArgsConstructor
 public class ValidationController implements ValidationApi {
 
-    private final CustomerValidationService customerLoginService;
-    private final AuthenticationManager authenticationManager;
+    private final CustomerValidationService customerValidationService;
     private final JwtUtil jwtUtil;
+    private final ApplicationEventPublisher publisher;
+
+    private final HttpServletRequest request;
 
 
     @Override
     public ResponseEntity<Void> customerSignUp(@RequestBody SignUpDTO signUpDTO) {
 
-        customerLoginService.verifyAndSaveCustomer(signUpDTO);
+        Customer customer = customerValidationService.verifyAndSaveCustomer(signUpDTO);
+        if(customer!=null)
+        {
+            publisher.publishEvent(new RegistrationCompleteEvent(
+                    customer,
+                    applicationUrl(request)
+            ));
+        }
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<String> customerLogin(@RequestBody AuthRequest authRequest) {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authRequest.getUserName(), authRequest.getPassword())
-            );
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new InvalidCredentialsException("inavalid username/password");
-        }
+        customerValidationService.validateUserNameAndPassword(authRequest);
+        customerValidationService.checkIfCustomerEnabled(authRequest);
         return new ResponseEntity<>(jwtUtil.generateToken(authRequest.getUserName()), HttpStatus.OK);
     }
-    /*
-    * Demo to access any api after login
-    *  @GetMapping("/test")
-    public void test(@RequestHeader("Authorization") String token){
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.substring(7);
-            String userName = jwtUtil.extractUsername(token);
-            System.out.println("username is: "+userName);
-        }
+
+
+    @Override
+    public ResponseEntity<String> verifyRegistration(@RequestParam("token") String token) {
+        String result = customerValidationService.validateVerificationToken(token);
+
+        return new ResponseEntity<>(result,HttpStatus.OK);
     }
-    * */
+
+    //@PostMapping("/reGenerateVerificationToken")
+    @Override
+    public ResponseEntity<String> reGenerateVerificationToken(@RequestBody AuthRequest authRequest){
+        customerValidationService.validateUserNameAndPassword(authRequest);
+        String result = customerValidationService.resendVerificationToken(authRequest.getUserName(),applicationUrl(request));
+        return new ResponseEntity<>(result,HttpStatus.OK);
+
+    }
+    private String applicationUrl(HttpServletRequest request) {
+        return "http://" +
+                request.getServerName() +
+                ":" +
+                request.getServerPort() +
+                request.getContextPath();
+    }
 
 
 

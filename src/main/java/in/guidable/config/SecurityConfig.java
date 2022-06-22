@@ -22,7 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig{
 
     private final JwtFilter jwtFilter;
-    private final static String[] ALLOWED_URLS = {"/h2-console/**","/favicon.ico/**","/validation/**", "/swagger-ui/**", "/v3/api-docs/**"};
+    private final static String[] ALLOWED_URLS = {"/h2-console/**","/validation/verifyRegistration/**","/validation/**", "/swagger-ui/**", "/v3/api-docs/**","/validation/reGenerateVerificationToken"};
 
 
     @Bean

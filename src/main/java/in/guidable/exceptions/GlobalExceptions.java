@@ -21,4 +21,22 @@ public class GlobalExceptions {
 
         return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(value = TokenExpiredException.class)
+    public ResponseEntity<String> handleTokenExpirationExcption(TokenExpiredException e){
+
+        return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = CustomerNotEnabledException.class)
+    public ResponseEntity<String> handleCustomerNotEnabledExcption(CustomerNotEnabledException e){
+
+        return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = MaxRetryExpiredExpetion.class)
+    public ResponseEntity<String> handleMaxRetryExpiredExpetion(MaxRetryExpiredExpetion e){
+
+        return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+    }
 }

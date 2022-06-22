@@ -7,6 +7,7 @@ import in.guidable.model.UpdateRoadmapDetail;
 import in.guidable.services.RoadmapService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -45,4 +46,6 @@ public class RoadmapController implements RoadmapsApi {
     public ResponseEntity<CreateRoadmapResponse> disableShareLink(String roadmapId) {
         return ResponseEntity.ok(roadmapService.disableShareLink(roadmapId));
     }
+
+
 }
