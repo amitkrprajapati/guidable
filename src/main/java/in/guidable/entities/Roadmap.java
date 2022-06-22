@@ -5,17 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
+
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -37,11 +30,13 @@ public class Roadmap implements SharableResource{
     private String parentId;
     private String originalAuthor;
     private String updatedBy;
+    @ManyToOne (cascade = CascadeType.ALL)
+    @JoinColumn(name = "customer_customer_id", referencedColumnName = "customerId")
+    private Customer customer;
     @Embedded
     private PublicMetadata publicMetadata;
 
-    @OneToMany
-    @Cascade(CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "roadmap_id")
     private List<Checkpoints> checkpoints;
 }

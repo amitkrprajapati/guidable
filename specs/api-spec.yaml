@@ -8,6 +8,13 @@ servers:
 paths:
   /roadmaps:
     get:
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in : header
+          name: Authorization
+          schema:
+            type: string
       summary: Get List of Roadmaps
       operationId: getRoadMaps
       responses:
@@ -22,6 +29,13 @@ paths:
     post:
       summary: Create a Roadmap
       operationId: createRoadmap
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: header
+          name : Authorization
+          schema:
+            type: string
       requestBody:
         description: Roadmap details
         content:
@@ -77,7 +91,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateRoadmapResponse'
-      x-codegen-request-body-name: roadmaps
+          x-codegen-request-body-name: roadmaps
   /roadmaps/{roadmapId}/actions/enableShareLink:
     post:
       parameters:
@@ -133,6 +147,11 @@ paths:
                 $ref: '#/components/schemas/SharableResourceResponse'
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     CreateRoadmapDetail:
       type: object

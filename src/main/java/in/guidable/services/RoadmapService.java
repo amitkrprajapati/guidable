@@ -3,12 +3,15 @@ package in.guidable.services;
 import in.guidable.converters.CheckpointConverter;
 import in.guidable.converters.RoadmapConverter;
 import in.guidable.entities.Checkpoints;
+import in.guidable.entities.Customer;
 import in.guidable.entities.Roadmap;
 import in.guidable.entities.SharableLinkKeyResourceMap;
+import in.guidable.exceptions.NoRoadMapFoundException;
 import in.guidable.model.CreateRoadmapDetail;
 import in.guidable.model.CreateRoadmapResponse;
 import in.guidable.model.SharableResourceResponse;
 import in.guidable.model.UpdateRoadmapDetail;
+import in.guidable.repositories.CustomerRepo;
 import in.guidable.repositories.RoadmapRepo;
 import in.guidable.repositories.SharableLinkKeyResourceMapRepo;
 import in.guidable.repositories.SharableResourceLikeRepo;
@@ -23,17 +26,19 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class RoadmapService {
-
+    private final CustomerRepo customerRepo;
     private final RoadmapRepo roadmapRepo;
     //    private final SharableResourceViewRepo sharableResourceViewRepo;
     private final SharableResourceLikeRepo sharableResourceLikeRepo;
     private final SharableLinkKeyResourceMapRepo sharableLinkKeyResourceMapRepo;
 
-    public CreateRoadmapResponse createRoadmap(CreateRoadmapDetail createRoadmapDetail) {
+    public CreateRoadmapResponse createRoadmap(String userName,CreateRoadmapDetail createRoadmapDetail) {
+        Customer customer = customerRepo.findByCustomerUserName(userName).orElseThrow(EntityNotFoundException::new);
         Roadmap newRoadmap = RoadmapConverter.toRoadmapEntity(createRoadmapDetail)
                 .toBuilder()
                 .originalAuthor("todo-placeholder")
                 .updatedBy("todo-placeholder")
+                .customer(customer)
                 .build();
         Roadmap roadmap = roadmapRepo.save(newRoadmap);
         if(createRoadmapDetail.getIsSharable())
@@ -41,9 +46,10 @@ public class RoadmapService {
         return RoadmapConverter.toRoadmapResponse(roadmap);
     }
 
-    public List<CreateRoadmapResponse> listRoadmap() {
-        return roadmapRepo
-                .findAll()
+    public List<CreateRoadmapResponse> listRoadmap(String username) {
+
+        List<Roadmap> roadMapList = roadmapRepo.findByCustomerCustomerUserName(username).orElseThrow(()-> new NoRoadMapFoundException("No Road Map linked to the user"));
+        return roadMapList
                 .stream()
                 .map(RoadmapConverter::toRoadmapResponse)
                 .collect(Collectors.toList());
