@@ -1,6 +1,7 @@
 package in.guidable.services;
 
 import in.guidable.entities.Customer;
+import in.guidable.entities.CustomerDetails;
 import in.guidable.repositories.CustomerRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +21,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Customer customer = customerRepo.findByCustomerUserName(username).orElseThrow(()-> new UsernameNotFoundException(""));
-        return new User(customer.getCustomerUserName(), customer.getCustomerPassword(), new ArrayList<>());
+        Optional<Customer> customer = customerRepo.findByCustomerUserName(username);
+
+      return customer.map(CustomerDetails::new).orElseThrow(()-> new UsernameNotFoundException("User not found"));
     }
 }
