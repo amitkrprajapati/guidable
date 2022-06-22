@@ -7,6 +7,7 @@ import in.guidable.entities.Roadmap;
 import in.guidable.entities.SharableLinkKeyResourceMap;
 import in.guidable.model.CreateRoadmapDetail;
 import in.guidable.model.CreateRoadmapResponse;
+import in.guidable.model.SharableResourceResponse;
 import in.guidable.model.UpdateRoadmapDetail;
 import in.guidable.repositories.RoadmapRepo;
 import in.guidable.repositories.SharableLinkKeyResourceMapRepo;
@@ -67,6 +68,7 @@ public class RoadmapService {
                 roadmap.getPublicMetadata().setIsSharable(true);
                 sharableLinkKeyResourceMapRepo.save(SharableLinkKeyResourceMap
                         .builder()
+                        .objectType(SharableResourceResponse.ObjectTypeEnum.ROADMAP)
                         .resourceId(roadmap.getId())
                         .isEnabled(roadmap.getPublicMetadata().getIsSharable())
                         .userId("not-defined-placeholder")
