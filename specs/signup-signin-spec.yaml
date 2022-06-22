@@ -94,6 +94,8 @@ components:
           type: string
         customerPassword:
           type: string
+        userRole:
+           type: string
     AuthRequest:
       type: object
       properties:

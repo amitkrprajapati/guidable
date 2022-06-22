@@ -3,6 +3,7 @@ package in.guidable.controllers;
 import in.guidable.api.ValidationApi;
 import in.guidable.entities.Customer;
 import in.guidable.event.RegistrationCompleteEvent;
+import in.guidable.exceptions.InvalidCredentialsException;
 import in.guidable.jwt.JwtUtil;
 import in.guidable.model.AuthRequest;
 import in.guidable.model.SignUpDTO;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;

@@ -22,6 +22,12 @@ public class GlobalExceptions {
         return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(value = NoRoadMapFoundException.class)
+    public ResponseEntity<String> handleNoRoadMapFoundException(NoRoadMapFoundException e){
+
+        return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(value = TokenExpiredException.class)
     public ResponseEntity<String> handleTokenExpirationExcption(TokenExpiredException e){
 

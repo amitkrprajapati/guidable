@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -21,6 +22,9 @@ public class Customer extends BaseEntity{
     private String customerEmail;
     private String customerPassword;
     private boolean isEnabled;
+
+    @Enumerated(EnumType.STRING)
+    private RoleType userRole;
 
     //TODO roadMapCollection
 

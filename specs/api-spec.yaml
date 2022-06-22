@@ -8,6 +8,13 @@ servers:
 paths:
   /roadmaps:
     get:
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in : header
+          name: Authorization
+          schema:
+            type: string
       summary: Get List of Roadmaps
       operationId: getRoadMaps
       responses:
@@ -22,6 +29,13 @@ paths:
     post:
       summary: Create a Roadmap
       operationId: createRoadmap
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: header
+          name : Authorization
+          schema:
+            type: string
       requestBody:
         description: Roadmap details
         content:
@@ -77,7 +91,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateRoadmapResponse'
-      x-codegen-request-body-name: roadmaps
+          x-codegen-request-body-name: roadmaps
   /roadmaps/{roadmapId}/actions/enableShareLink:
     post:
       parameters:
@@ -112,7 +126,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateRoadmapResponse'
+
+
+  /search/findByLinkKey/{linkKey}:
+    get:
+      parameters:
+        - name: linkKey
+          in: path
+          required: true
+          schema:
+            type: string
+      summary: Find a shared resource by linkKey
+      operationId: findByLinkKey
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SharableResourceResponse'
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     CreateRoadmapDetail:
       type: object
@@ -150,32 +189,6 @@ components:
           type: boolean
 
 
-    CreateRoadmapResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          example: '12345'
-        name:
-          type: string
-          example: "Journey to ML Engineer"
-        description:
-          type: string
-          example: "Explore this roadmap to be a ML engineer"
-        parentId:
-          type: string
-          example: "id-of-roadmap-collection"
-        checkpoints:
-          type: array
-          items:
-            $ref: "#/components/schemas/Checkpoints"
-        originalAuthor:
-          type: string
-        updatedBy:
-          type: string
-        publicMetadata:
-          $ref: "#/components/schemas/SharableResourcePublicMetadata"
-
     Checkpoints:
       type: object
       properties:
@@ -207,5 +220,47 @@ components:
           type: integer
           format: int64
           example: 42
+
+    CreateRoadmapResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '12345'
+        name:
+          type: string
+          example: "Journey to ML Engineer"
+        description:
+          type: string
+          example: "Explore this roadmap to be a ML engineer"
+        parentId:
+          type: string
+          example: "id-of-roadmap-collection"
+        checkpoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/Checkpoints"
+        originalAuthor:
+          type: string
+        updatedBy:
+          type: string
+        publicMetadata:
+          $ref: "#/components/schemas/SharableResourcePublicMetadata"
+
+    SharableResource:
+      oneOf:
+        - $ref: '#/components/schemas/CreateRoadmapResponse'
+
+    SharableResourceResponse:
+      type: object
+      properties:
+        objectType:
+          type: string
+          enum:
+            - ROADMAP
+            - ROADMAP_COLLECTION
+        publicResource:
+          $ref: '#/components/schemas/SharableResource'
+
 
 
