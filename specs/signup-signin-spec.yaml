@@ -41,6 +41,48 @@ paths:
             application/json:
               schema:
                 type: string
+  /validation/verifyRegistration:
+    get:
+      summary: Verify Registration Token
+      operationId: verifyRegistration
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Verification Success
+          content:
+            application/json:
+              schema:
+                type: string
+        401:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: string
+  /validation/reGenerateVerificationToken:
+    post:
+      summary: Resend VerificationToken
+      operationId: reGenerateVerificationToken
+      requestBody:
+        description: Resend VerificationToken
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+        required: true
+      responses:
+        200:
+          description: Resend VerificationToken Success
+          content:
+            application/json:
+              schema:
+                type: string
+
 components:
   schemas:
     SignUpDTO:

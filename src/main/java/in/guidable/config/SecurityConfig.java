@@ -17,14 +17,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true,prePostEnabled = true)
+@EnableGlobalMethodSecurity(securedEnabled= true,prePostEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig{
 
     private final JwtFilter jwtFilter;
-
-    private final static String[] ALLOWED_URLS = {"/h2-console/**","/favicon.ico/**","/validation/**", "/swagger-ui/**", "/v3/api-docs/**"};
-
+    private final static String[] ALLOWED_URLS = {"/h2-console/**","/validation/verifyRegistration/**","/validation/**", "/swagger-ui/**", "/v3/api-docs/**","/validation/reGenerateVerificationToken"};
 
 
     @Bean
@@ -39,7 +37,6 @@ public class SecurityConfig{
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.headers().frameOptions().disable();
         http.csrf().disable().authorizeRequests().antMatchers(ALLOWED_URLS)
                 .permitAll().and().authorizeRequests().anyRequest().authenticated()
                 .and().exceptionHandling().and().sessionManagement()
