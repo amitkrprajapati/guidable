@@ -1,6 +1,7 @@
 package in.guidable.entities;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -11,18 +12,16 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "CUSTOMER_TBL")
-public class Customer {
+@AttributeOverride(name = "id",column = @Column(name = "customerId",length = 16))
+public class Customer extends BaseEntity{
 
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "in.guidable.repositories.generator.CustomUUIDGenerator")
-    @Column(length = 16)
-    private UUID customerId;
 
     private String customerUserName;
     private String customerEmail;
     private String customerPassword;
+    private boolean isEnabled;
 
     @Enumerated(EnumType.STRING)
     private RoleType userRole;
