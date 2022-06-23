@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -17,24 +18,18 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Roadmap implements SharableResource{
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "in.guidable.repositories.generator.CustomUUIDGenerator"
-    )
-    private String id;
+@AttributeOverride(name = "id",column = @Column(name = "roadmap_id",length = 16))
+public class Roadmap extends BaseEntity  {
     private String name;
     private String description;
-    private String parentId;
     private String originalAuthor;
     private String updatedBy;
-    @ManyToOne (cascade = CascadeType.ALL)
-    @JoinColumn(name = "customer_customer_id", referencedColumnName = "customerId")
-    private Customer customer;
     @Embedded
     private PublicMetadata publicMetadata;
+
+    @ManyToOne
+    @JoinColumn(name = "journey_id", referencedColumnName = "journey_Id")
+    private Journey journey;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "roadmap_id")

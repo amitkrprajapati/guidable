@@ -10,10 +10,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Repository
-public interface SharableLinkKeyResourceMapRepo extends JpaRepository<SharableLinkKeyResourceMap, Long> {
+public interface SharableLinkKeyResourceMapRepo extends JpaRepository<SharableLinkKeyResourceMap, UUID> {
     @Modifying
     @Query("UPDATE SharableLinkKeyResourceMap linkMap SET linkMap.isEnabled = :status where linkMap.resourceId= :resourceId")
     void changeLinkStatus(@Param("resourceId") String resourceId, Boolean status);

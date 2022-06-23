@@ -7,9 +7,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface RoadmapRepo extends JpaRepository<Roadmap, String> {
+public interface RoadmapRepo extends JpaRepository<Roadmap, UUID> {
 
-    Optional<List<Roadmap>> findByCustomerCustomerUserName(String customerUserName);
 }

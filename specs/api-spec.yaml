@@ -6,15 +6,30 @@ info:
 servers:
   - url: http://localhost/8081
 paths:
+  /journey:
+    post:
+      summary: Create a Jouneys
+      operationId: createJourney
+      parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
+      requestBody:
+        description: Journey details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateJourneyDetail'
+        required: true
+      responses:
+        200:
+          description: Journey Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JourneyResponse'
   /roadmaps:
     get:
-      security:
-        - bearerAuth: [ ]
       parameters:
-        - in : header
-          name: Authorization
-          schema:
-            type: string
+        - $ref: "#/components/parameters/AuthorizationHeader"
       summary: Get List of Roadmaps
       operationId: getRoadMaps
       responses:
@@ -25,17 +40,12 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/CreateRoadmapResponse'
+                  $ref: '#/components/schemas/RoadmapResponse'
     post:
       summary: Create a Roadmap
       operationId: createRoadmap
-      security:
-        - bearerAuth: [ ]
       parameters:
-        - in: header
-          name : Authorization
-          schema:
-            type: string
+        - $ref: "#/components/parameters/AuthorizationHeader"
       requestBody:
         description: Roadmap details
         content:
@@ -49,7 +59,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateRoadmapResponse'
+                $ref: '#/components/schemas/RoadmapResponse'
       x-codegen-request-body-name: roadmaps
   /roadmaps/{roadmapId}:
     get:
@@ -67,7 +77,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateRoadmapResponse'
+                $ref: '#/components/schemas/RoadmapResponse'
     put:
       parameters:
         - name: roadmapId
@@ -90,7 +100,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateRoadmapResponse'
+                $ref: '#/components/schemas/RoadmapResponse'
           x-codegen-request-body-name: roadmaps
   /roadmaps/{roadmapId}/actions/enableShareLink:
     post:
@@ -108,7 +118,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateRoadmapResponse'
+                $ref: '#/components/schemas/RoadmapResponse'
   /roadmaps/{roadmapId}/actions/disableShareLink:
     post:
       parameters:
@@ -125,7 +135,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateRoadmapResponse'
+                $ref: '#/components/schemas/RoadmapResponse'
 
 
   /search/findByLinkKey/{linkKey}:
@@ -147,12 +157,19 @@ paths:
                 $ref: '#/components/schemas/SharableResourceResponse'
 
 components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
   schemas:
+    CreateJourneyDetail:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Journey to ML Engineer"
+        description:
+          type: string
+          example: "Explore this journey to be a ML engineer"
+        isSharable:
+          type: boolean
+
     CreateRoadmapDetail:
       type: object
       properties:
@@ -221,7 +238,7 @@ components:
           format: int64
           example: 42
 
-    CreateRoadmapResponse:
+    RoadmapResponse:
       type: object
       properties:
         id:
@@ -247,9 +264,29 @@ components:
         publicMetadata:
           $ref: "#/components/schemas/SharableResourcePublicMetadata"
 
+    JourneyResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '12345'
+        name:
+          type: string
+          example: "Journey to ML Engineer"
+        description:
+          type: string
+          example: "Explore this journey to be a ML engineer"
+        originalAuthor:
+          type: string
+        updatedBy:
+          type: string
+        publicMetadata:
+          $ref: "#/components/schemas/SharableResourcePublicMetadata"
+
     SharableResource:
       oneOf:
-        - $ref: '#/components/schemas/CreateRoadmapResponse'
+        - $ref: '#/components/schemas/RoadmapResponse'
+        - $ref: '#/components/schemas/JourneyResponse'
 
     SharableResourceResponse:
       type: object
@@ -261,6 +298,18 @@ components:
             - ROADMAP_COLLECTION
         publicResource:
           $ref: '#/components/schemas/SharableResource'
+
+  parameters:
+    ## Headers
+    AuthorizationHeader:
+      name: Authorization
+      in: header
+      schema:
+        type: string
+      required: true
+
+
+
 
 
 

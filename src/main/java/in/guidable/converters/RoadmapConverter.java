@@ -3,7 +3,7 @@ package in.guidable.converters;
 import in.guidable.entities.PublicMetadata;
 import in.guidable.entities.Roadmap;
 import in.guidable.model.CreateRoadmapDetail;
-import in.guidable.model.CreateRoadmapResponse;
+import in.guidable.model.RoadmapResponse;
 import in.guidable.model.SharableResourcePublicMetadata;
 
 import java.util.stream.Collectors;
@@ -13,7 +13,7 @@ public class RoadmapConverter {
     {
         return Roadmap.builder()
                 .name(createRoadmapDetail.getName())
-                .parentId(createRoadmapDetail.getParentId())
+//                .parentId(createRoadmapDetail.getParentId())
                 .description(createRoadmapDetail.getDescription())
                 .checkpoints(createRoadmapDetail.getCheckpoints().stream().map(CheckpointConverter::toCheckPointEntity).collect(Collectors.toList()))
                 .publicMetadata(PublicMetadata
@@ -25,11 +25,11 @@ public class RoadmapConverter {
                 .build();
     }
 
-    public static CreateRoadmapResponse toRoadmapResponse(Roadmap roadmap) {
-        return new CreateRoadmapResponse()
-                .id(roadmap.getId())
+    public static RoadmapResponse toRoadmapResponse(Roadmap roadmap) {
+        return new RoadmapResponse()
+                .id(roadmap.getId().toString())
                 .name(roadmap.getName())
-                .parentId(roadmap.getParentId())
+//                .parentId(roadmap.getParentId())
                 .description(roadmap.getDescription())
                 .originalAuthor(roadmap.getOriginalAuthor())
                 .updatedBy(roadmap.getUpdatedBy())
