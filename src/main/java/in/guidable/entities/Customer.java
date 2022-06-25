@@ -1,8 +1,11 @@
 package in.guidable.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -11,10 +14,11 @@ import java.util.UUID;
 
 @Entity
 @NoArgsConstructor
-@Data
-@EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
+@Getter
+@Setter
 @Table(name = "CUSTOMER_TBL")
-@AttributeOverride(name = "id",column = @Column(name = "customerId",length = 16))
+@AttributeOverride(name = "id",column = @Column(name = "customer_id",length = 16))
 public class Customer extends BaseEntity{
 
 

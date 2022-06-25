@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class AuthenticationUtil {
-
-
     private final JwtUtil jwtUtil;
     public String getUserFromToken(String token)
     {

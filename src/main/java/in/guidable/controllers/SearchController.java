@@ -1,6 +1,6 @@
 package in.guidable.controllers;
 
-import in.guidable.api.SearchApi;
+import in.guidable.api.PublicApi;
 import in.guidable.model.SharableResourceResponse;
 import in.guidable.services.SearchService;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import javax.persistence.EntityNotFoundException;
 
 @RequiredArgsConstructor
 @RestController
-public class SearchController implements SearchApi {
+public class SearchController implements PublicApi {
 
     private final SearchService searchService;
 

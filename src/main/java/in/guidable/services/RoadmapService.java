@@ -2,13 +2,13 @@ package in.guidable.services;
 
 import in.guidable.converters.CheckpointConverter;
 import in.guidable.converters.RoadmapConverter;
-import in.guidable.entities.Checkpoints;
 import in.guidable.entities.Customer;
 import in.guidable.entities.Roadmap;
 import in.guidable.entities.SharableLinkKeyResourceMap;
 import in.guidable.exceptions.NoRoadMapFoundException;
 import in.guidable.model.CreateRoadmapDetail;
-import in.guidable.model.CreateRoadmapResponse;
+import in.guidable.model.PublicResourceType;
+import in.guidable.model.RoadmapResponse;
 import in.guidable.model.SharableResourceResponse;
 import in.guidable.model.UpdateRoadmapDetail;
 import in.guidable.repositories.CustomerRepo;
@@ -20,7 +20,9 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,41 +34,39 @@ public class RoadmapService {
     private final SharableResourceLikeRepo sharableResourceLikeRepo;
     private final SharableLinkKeyResourceMapRepo sharableLinkKeyResourceMapRepo;
 
-    public CreateRoadmapResponse createRoadmap(String userName,CreateRoadmapDetail createRoadmapDetail) {
+    public RoadmapResponse createRoadmap(String userName, CreateRoadmapDetail createRoadmapDetail) {
         Customer customer = customerRepo.findByCustomerUserName(userName).orElseThrow(EntityNotFoundException::new);
         Roadmap newRoadmap = RoadmapConverter.toRoadmapEntity(createRoadmapDetail)
                 .toBuilder()
                 .originalAuthor("todo-placeholder")
                 .updatedBy("todo-placeholder")
-                .customer(customer)
                 .build();
         Roadmap roadmap = roadmapRepo.save(newRoadmap);
-        if(createRoadmapDetail.getIsSharable())
-            enableShareLink(roadmap.getId());
         return RoadmapConverter.toRoadmapResponse(roadmap);
     }
 
-    public List<CreateRoadmapResponse> listRoadmap(String username) {
+    public List<RoadmapResponse> listRoadmap(String username) {
 
-        List<Roadmap> roadMapList = roadmapRepo.findByCustomerCustomerUserName(username).orElseThrow(()-> new NoRoadMapFoundException("No Road Map linked to the user"));
-        return roadMapList
-                .stream()
-                .map(RoadmapConverter::toRoadmapResponse)
-                .collect(Collectors.toList());
+//        List<Roadmap> roadMapList = roadmapRepo.findByCustomerCustomerUserName(username).orElseThrow(()-> new NoRoadMapFoundException("No Road Map linked to the user"));
+        return new ArrayList<>();
+//        roadMapList
+//                .stream()
+//                .map(RoadmapConverter::toRoadmapResponse)
+//                .collect(Collectors.toList());
 
     }
 
-    public CreateRoadmapResponse getRoadMap(String roadmapId) {
-        Roadmap roadmap = roadmapRepo.findById(roadmapId).orElseThrow(EntityNotFoundException::new);
+    public RoadmapResponse getRoadMap(String roadmapId) {
+        Roadmap roadmap = roadmapRepo.findById(UUID.fromString(roadmapId)).orElseThrow(EntityNotFoundException::new);
         return RoadmapConverter.toRoadmapResponse(roadmap);
     }
 
     @Transactional
-    public CreateRoadmapResponse enableShareLink(String roadmapId) {
-        Roadmap roadmap = roadmapRepo.findById(roadmapId).orElseThrow(EntityNotFoundException::new);
+    public RoadmapResponse enableShareLink(String roadmapId) {
+        Roadmap roadmap = roadmapRepo.findById(UUID.fromString(roadmapId)).orElseThrow(EntityNotFoundException::new);
         if (roadmap.getPublicMetadata().getLinkKey() != null) {
             roadmap.getPublicMetadata().setIsSharable(true);
-            sharableLinkKeyResourceMapRepo.changeLinkStatus(roadmap.getId(), true);
+            sharableLinkKeyResourceMapRepo.changeLinkStatus(roadmap.getId().toString(), true);
         } else {
             try {
                 String linkKey = sharableLinkKeyResourceMapRepo.generateUniqueLinkKey();
@@ -74,10 +74,10 @@ public class RoadmapService {
                 roadmap.getPublicMetadata().setIsSharable(true);
                 sharableLinkKeyResourceMapRepo.save(SharableLinkKeyResourceMap
                         .builder()
-                        .objectType(SharableResourceResponse.ObjectTypeEnum.ROADMAP)
+                        .objectType(PublicResourceType.ROADMAP)
                         .resourceId(roadmap.getId())
                         .isEnabled(roadmap.getPublicMetadata().getIsSharable())
-                        .userId("not-defined-placeholder")
+//                        .customerId("not-defined-placeholder")
                         .linkKey(roadmap.getPublicMetadata().getLinkKey())
                         .build());
             } catch (Exception e) {
@@ -88,26 +88,22 @@ public class RoadmapService {
     }
 
     @Transactional
-    public CreateRoadmapResponse disableShareLink(String roadmapId) {
-        Roadmap roadmap = roadmapRepo.findById(roadmapId).orElseThrow(EntityNotFoundException::new);
+    public RoadmapResponse disableShareLink(String roadmapId) {
+        Roadmap roadmap = roadmapRepo.findById(UUID.fromString(roadmapId)).orElseThrow(EntityNotFoundException::new);
         roadmap.getPublicMetadata().setIsSharable(false);
-        sharableLinkKeyResourceMapRepo.changeLinkStatus(roadmap.getId(), false);
+        sharableLinkKeyResourceMapRepo.changeLinkStatus(roadmap.getId().toString(), false);
         return RoadmapConverter.toRoadmapResponse(roadmap);
     }
 
     @Transactional
-    public CreateRoadmapResponse updateRoadmap(String roadmapId, UpdateRoadmapDetail updataRoadmapDetail) {
-        Roadmap roadmap = roadmapRepo.findById(roadmapId).orElseThrow(EntityNotFoundException::new);
+    public RoadmapResponse updateRoadmap(String roadmapId, UpdateRoadmapDetail updataRoadmapDetail) {
+        Roadmap roadmap = roadmapRepo.findById(UUID.fromString(roadmapId)).orElseThrow(EntityNotFoundException::new);
 //        checkpointRepo.deleteCheckpointsByRoadmapId(roadmapId);
         roadmap.setName(updataRoadmapDetail.getName());
         roadmap.setDescription(updataRoadmapDetail.getDescription());
-        roadmap.setCheckpoints(updataRoadmapDetail.getCheckpoints().stream().map(CheckpointConverter::toCheckPointEntity).collect(Collectors.toList()));
         roadmap.setName(updataRoadmapDetail.getName());
         roadmap.setUpdatedBy("todo_place_holder");
 
-        if(updataRoadmapDetail.getIsSharable())
-            enableShareLink(roadmap.getId());
-        roadmapRepo.save(roadmap);
         return RoadmapConverter.toRoadmapResponse(roadmap);
     }
 }

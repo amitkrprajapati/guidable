@@ -1,7 +1,11 @@
 package in.guidable.converters;
 
+import in.guidable.entities.Checkpoints;
+import in.guidable.model.CheckpointResponse;
+import in.guidable.model.CreateCheckpointDetail;
+
 public class CheckpointConverter {
-    public static in.guidable.entities.Checkpoints toCheckPointEntity(in.guidable.model.Checkpoints checkpoints)
+    public static Checkpoints toCheckPointEntity(CreateCheckpointDetail checkpoints)
     {
         return in.guidable.entities.Checkpoints.builder()
                 .name(checkpoints.getName())
@@ -12,10 +16,10 @@ public class CheckpointConverter {
                 .build();
     }
 
-    public static in.guidable.model.Checkpoints toCheckPointModel(in.guidable.entities.Checkpoints checkpoints)
+    public static CheckpointResponse toCheckPointModel(in.guidable.entities.Checkpoints checkpoints)
     {
-        return  new in.guidable.model.Checkpoints()
-                .checkpointKey(checkpoints.getId())
+        return  new CheckpointResponse()
+                .id(checkpoints.getId().toString())
                 .name(checkpoints.getName())
                 .shortDescription(checkpoints.getShortDescription())
                 .detailedDescription(checkpoints.getDetailedDescription())
