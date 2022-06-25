@@ -31,6 +31,10 @@ public class Roadmap extends BaseEntity  {
     @JoinColumn(name = "journey_id", referencedColumnName = "journey_Id")
     private Journey journey;
 
+    @ManyToOne
+    @JoinColumn(name = "customer_id", referencedColumnName = "customer_Id")
+    private Customer customer;
+
 
 //    @OneToMany
 //    @JoinColumn(name = "roadmap_id")

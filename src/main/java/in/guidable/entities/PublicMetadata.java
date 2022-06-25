@@ -15,9 +15,9 @@ import javax.persistence.Embeddable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PublicMetadata {
-    private Long viewCount;
-    private Long likeCount;
-    private String linkKey;
-    private Boolean isSharable;
+    private Long viewCount = 0L;
+    private Long likeCount = 0L;
+    private String linkKey = "";
+    private Boolean isSharable = false;
 
 }

@@ -1,11 +1,14 @@
 package in.guidable.controllers;
 
 import in.guidable.api.RoadmapsApi;
+import in.guidable.exceptions.RenderableException;
+import in.guidable.exceptions.RenderableExceptionGenerator;
 import in.guidable.model.CreateRoadmapDetail;
 import in.guidable.model.RoadmapResponse;
 import in.guidable.model.UpdateRoadmapDetail;
 import in.guidable.services.RoadmapService;
 import in.guidable.util.AuthenticationUtil;
+import in.guidable.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,26 +25,28 @@ public class RoadmapController implements RoadmapsApi {
 
     @Override
     @PreAuthorize("hasAuthority('ROLE_USER')")
-    public ResponseEntity<RoadmapResponse> createRoadmap(String authToken, CreateRoadmapDetail createRoadmapDetail) {
+    public ResponseEntity<RoadmapResponse> createRoadmap(String authorization, CreateRoadmapDetail createRoadmapDetail) {
 
-        String userName= authenticationUtil.getUserFromToken(authToken);
+        String userName= authenticationUtil.getUserFromToken(authorization);
+        ValidationUtil.validateId("JourneyId", createRoadmapDetail.getJourneyId());
         return ResponseEntity.ok(roadmapService.createRoadmap(userName, createRoadmapDetail));
+
     }
 
-//    @Override
-//    @PreAuthorize("hasAuthority('ROLE_USER')")
-//    public ResponseEntity<List<RoadmapResponse>> getRoadMaps(String authToken) {
-//
-//        String userName= authenticationUtil.getUserFromToken(authToken);
-//        return ResponseEntity.ok(roadmapService.listRoadmap(userName));
-//
-//    }
-//
-//    @Override
-//    public ResponseEntity<RoadmapResponse> getRoadMap(String roadmapId) {
-//        return ResponseEntity.ok(roadmapService.getRoadMap(roadmapId));
-//    }
-//
+    @Override
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public ResponseEntity<List<RoadmapResponse>> listRoadmap(String authorization, String journeyId, Integer limit, Integer page) {
+        String userName= authenticationUtil.getUserFromToken(authorization);
+        ValidationUtil.validateId("JourneyId", journeyId);
+        return ResponseEntity.ok(roadmapService.listRoadmap(userName, journeyId, limit, page));
+    }
+
+    @Override
+    public ResponseEntity<RoadmapResponse> getRoadmap(String authorization, String roadmapId) {
+        String userName= authenticationUtil.getUserFromToken(authorization);
+        ValidationUtil.validateId("RoadmapId", roadmapId);
+        return ResponseEntity.ok(roadmapService.getRoadMap(userName, roadmapId));
+    }
 //    @Override
 //    @PreAuthorize("hasAuthority('ROLE_USER')")
 //    public ResponseEntity<RoadmapResponse> updateRoadmap(String roadmapId, UpdateRoadmapDetail updataRoadmapDetail) {

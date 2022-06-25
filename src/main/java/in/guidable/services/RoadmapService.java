@@ -1,21 +1,24 @@
 package in.guidable.services;
 
-import in.guidable.converters.CheckpointConverter;
 import in.guidable.converters.RoadmapConverter;
 import in.guidable.entities.Customer;
+import in.guidable.entities.Journey;
 import in.guidable.entities.Roadmap;
 import in.guidable.entities.SharableLinkKeyResourceMap;
-import in.guidable.exceptions.NoRoadMapFoundException;
+import in.guidable.exceptions.RenderableExceptionGenerator;
 import in.guidable.model.CreateRoadmapDetail;
 import in.guidable.model.PublicResourceType;
 import in.guidable.model.RoadmapResponse;
-import in.guidable.model.SharableResourceResponse;
 import in.guidable.model.UpdateRoadmapDetail;
 import in.guidable.repositories.CustomerRepo;
+import in.guidable.repositories.JourneyRepo;
 import in.guidable.repositories.RoadmapRepo;
 import in.guidable.repositories.SharableLinkKeyResourceMapRepo;
 import in.guidable.repositories.SharableResourceLikeRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -30,34 +33,56 @@ import java.util.stream.Collectors;
 public class RoadmapService {
     private final CustomerRepo customerRepo;
     private final RoadmapRepo roadmapRepo;
+    private final JourneyRepo journeyRepo;
     //    private final SharableResourceViewRepo sharableResourceViewRepo;
     private final SharableResourceLikeRepo sharableResourceLikeRepo;
     private final SharableLinkKeyResourceMapRepo sharableLinkKeyResourceMapRepo;
 
     public RoadmapResponse createRoadmap(String userName, CreateRoadmapDetail createRoadmapDetail) {
-        Customer customer = customerRepo.findByCustomerUserName(userName).orElseThrow(EntityNotFoundException::new);
+        Customer customer = customerRepo
+                .findByCustomerUserName(userName)
+                .orElseThrow(()-> RenderableExceptionGenerator.generateInvalidUserException(userName));
+
+        Journey journey = journeyRepo
+                .findByIdAndCustomer(UUID.fromString(createRoadmapDetail.getJourneyId()), customer)
+                .orElseThrow(()->RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException("Journey", createRoadmapDetail.getJourneyId()));
+
         Roadmap newRoadmap = RoadmapConverter.toRoadmapEntity(createRoadmapDetail)
                 .toBuilder()
-                .originalAuthor("todo-placeholder")
-                .updatedBy("todo-placeholder")
+                .journey(journey)
+                .customer(customer)
+                .originalAuthor(customer.getCustomerUserName())
+                .updatedBy(customer.getCustomerUserName())
                 .build();
         Roadmap roadmap = roadmapRepo.save(newRoadmap);
         return RoadmapConverter.toRoadmapResponse(roadmap);
     }
 
-    public List<RoadmapResponse> listRoadmap(String username) {
+    public List<RoadmapResponse> listRoadmap(String userName, String journeyId, Integer limit, Integer page) {
 
-//        List<Roadmap> roadMapList = roadmapRepo.findByCustomerCustomerUserName(username).orElseThrow(()-> new NoRoadMapFoundException("No Road Map linked to the user"));
-        return new ArrayList<>();
-//        roadMapList
-//                .stream()
-//                .map(RoadmapConverter::toRoadmapResponse)
-//                .collect(Collectors.toList());
+        Customer customer = customerRepo
+                .findByCustomerUserName(userName)
+                .orElseThrow(()-> RenderableExceptionGenerator.generateInvalidUserException(userName));
+        Journey journey = journeyRepo
+                .findByIdAndCustomer(UUID.fromString(journeyId), customer)
+                .orElseThrow(()->RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException("Journey", journeyId));
+        Pageable pageable = PageRequest.of(page, limit);
+        Page<Roadmap> roadmapList = roadmapRepo.findAllByJourney(journey, pageable);
+        return roadmapList
+                .stream()
+                .map(RoadmapConverter::toRoadmapResponse)
+                .collect(Collectors.toList());
 
     }
 
-    public RoadmapResponse getRoadMap(String roadmapId) {
-        Roadmap roadmap = roadmapRepo.findById(UUID.fromString(roadmapId)).orElseThrow(EntityNotFoundException::new);
+    public RoadmapResponse getRoadMap(String userName, String roadmapId) {
+        Customer customer = customerRepo
+                .findByCustomerUserName(userName)
+                .orElseThrow(()-> RenderableExceptionGenerator.generateInvalidUserException(userName));
+
+        Roadmap roadmap = roadmapRepo
+                .findByIdAndCustomer(UUID.fromString(roadmapId), customer)
+                .orElseThrow(()->RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException("Roadmap", roadmapId));
         return RoadmapConverter.toRoadmapResponse(roadmap);
     }
 
