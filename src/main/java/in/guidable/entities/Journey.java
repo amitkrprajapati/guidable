@@ -40,7 +40,4 @@ public class Journey extends BaseEntity{
     @JoinColumn(name = "customer_id", referencedColumnName = "customer_Id")
     private Customer customer;
 
-    @OneToMany
-    @JoinColumn(name = "journey_id")
-    private List<Roadmap> roadmaps = new ArrayList<>();
 }

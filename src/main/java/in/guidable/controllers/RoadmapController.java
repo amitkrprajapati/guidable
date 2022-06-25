@@ -28,35 +28,35 @@ public class RoadmapController implements RoadmapsApi {
         return ResponseEntity.ok(roadmapService.createRoadmap(userName, createRoadmapDetail));
     }
 
-    @Override
-    @PreAuthorize("hasAuthority('ROLE_USER')")
-    public ResponseEntity<List<RoadmapResponse>> getRoadMaps(String authToken) {
-
-        String userName= authenticationUtil.getUserFromToken(authToken);
-        return ResponseEntity.ok(roadmapService.listRoadmap(userName));
-
-    }
-
-    @Override
-    public ResponseEntity<RoadmapResponse> getRoadMap(String roadmapId) {
-        return ResponseEntity.ok(roadmapService.getRoadMap(roadmapId));
-    }
-
-    @Override
-    @PreAuthorize("hasAuthority('ROLE_USER')")
-    public ResponseEntity<RoadmapResponse> updateRoadmap(String roadmapId, UpdateRoadmapDetail updataRoadmapDetail) {
-        return ResponseEntity.ok(roadmapService.updateRoadmap(roadmapId, updataRoadmapDetail));
-    }
-
-    @Override
-    @PreAuthorize("hasAuthority('ROLE_USER')")
-    public ResponseEntity<RoadmapResponse> enableShareLink(String roadmapId) {
-        return ResponseEntity.ok(roadmapService.enableShareLink(roadmapId));
-    }
-
-    @Override
-    @PreAuthorize("hasAuthority('ROLE_USER')")
-    public ResponseEntity<RoadmapResponse> disableShareLink(String roadmapId) {
-        return ResponseEntity.ok(roadmapService.disableShareLink(roadmapId));
-    }
+//    @Override
+//    @PreAuthorize("hasAuthority('ROLE_USER')")
+//    public ResponseEntity<List<RoadmapResponse>> getRoadMaps(String authToken) {
+//
+//        String userName= authenticationUtil.getUserFromToken(authToken);
+//        return ResponseEntity.ok(roadmapService.listRoadmap(userName));
+//
+//    }
+//
+//    @Override
+//    public ResponseEntity<RoadmapResponse> getRoadMap(String roadmapId) {
+//        return ResponseEntity.ok(roadmapService.getRoadMap(roadmapId));
+//    }
+//
+//    @Override
+//    @PreAuthorize("hasAuthority('ROLE_USER')")
+//    public ResponseEntity<RoadmapResponse> updateRoadmap(String roadmapId, UpdateRoadmapDetail updataRoadmapDetail) {
+//        return ResponseEntity.ok(roadmapService.updateRoadmap(roadmapId, updataRoadmapDetail));
+//    }
+//
+//    @Override
+//    @PreAuthorize("hasAuthority('ROLE_USER')")
+//    public ResponseEntity<RoadmapResponse> enableShareLink(String roadmapId) {
+//        return ResponseEntity.ok(roadmapService.enableShareLink(roadmapId));
+//    }
+//
+//    @Override
+//    @PreAuthorize("hasAuthority('ROLE_USER')")
+//    public ResponseEntity<RoadmapResponse> disableShareLink(String roadmapId) {
+//        return ResponseEntity.ok(roadmapService.disableShareLink(roadmapId));
+//    }
 }

@@ -7,6 +7,7 @@ import in.guidable.entities.Roadmap;
 import in.guidable.entities.SharableLinkKeyResourceMap;
 import in.guidable.exceptions.NoRoadMapFoundException;
 import in.guidable.model.CreateRoadmapDetail;
+import in.guidable.model.PublicResourceType;
 import in.guidable.model.RoadmapResponse;
 import in.guidable.model.SharableResourceResponse;
 import in.guidable.model.UpdateRoadmapDetail;
@@ -41,8 +42,6 @@ public class RoadmapService {
                 .updatedBy("todo-placeholder")
                 .build();
         Roadmap roadmap = roadmapRepo.save(newRoadmap);
-        if(createRoadmapDetail.getIsSharable())
-            enableShareLink(roadmap.getId().toString());
         return RoadmapConverter.toRoadmapResponse(roadmap);
     }
 
@@ -75,10 +74,10 @@ public class RoadmapService {
                 roadmap.getPublicMetadata().setIsSharable(true);
                 sharableLinkKeyResourceMapRepo.save(SharableLinkKeyResourceMap
                         .builder()
-                        .objectType(SharableResourceResponse.ObjectTypeEnum.ROADMAP)
-                        .resourceId(roadmap.getId().toString())
+                        .objectType(PublicResourceType.ROADMAP)
+                        .resourceId(roadmap.getId())
                         .isEnabled(roadmap.getPublicMetadata().getIsSharable())
-                        .userId("not-defined-placeholder")
+//                        .customerId("not-defined-placeholder")
                         .linkKey(roadmap.getPublicMetadata().getLinkKey())
                         .build());
             } catch (Exception e) {
@@ -102,13 +101,9 @@ public class RoadmapService {
 //        checkpointRepo.deleteCheckpointsByRoadmapId(roadmapId);
         roadmap.setName(updataRoadmapDetail.getName());
         roadmap.setDescription(updataRoadmapDetail.getDescription());
-        roadmap.setCheckpoints(updataRoadmapDetail.getCheckpoints().stream().map(CheckpointConverter::toCheckPointEntity).collect(Collectors.toList()));
         roadmap.setName(updataRoadmapDetail.getName());
         roadmap.setUpdatedBy("todo_place_holder");
 
-        if(updataRoadmapDetail.getIsSharable())
-            enableShareLink(roadmap.getId().toString());
-        roadmapRepo.save(roadmap);
         return RoadmapConverter.toRoadmapResponse(roadmap);
     }
 }

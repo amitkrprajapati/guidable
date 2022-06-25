@@ -1,6 +1,6 @@
 package in.guidable.controllers;
 
-import in.guidable.api.JourneyApi;
+import in.guidable.api.JourneysApi;
 import in.guidable.model.CreateJourneyDetail;
 import in.guidable.model.JourneyResponse;
 import in.guidable.services.JourneyService;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class JourneyController implements JourneyApi {
+public class JourneyController implements JourneysApi {
 
     private final AuthenticationUtil authenticationUtil;
     private final JourneyService journeyService;

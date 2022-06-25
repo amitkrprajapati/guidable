@@ -31,7 +31,8 @@ public class Roadmap extends BaseEntity  {
     @JoinColumn(name = "journey_id", referencedColumnName = "journey_Id")
     private Journey journey;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "roadmap_id")
-    private List<Checkpoints> checkpoints;
+
+//    @OneToMany
+//    @JoinColumn(name = "roadmap_id")
+//    private List<Checkpoints> checkpoints;
 }

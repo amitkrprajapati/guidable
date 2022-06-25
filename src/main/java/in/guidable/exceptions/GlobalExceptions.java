@@ -45,4 +45,9 @@ public class GlobalExceptions {
 
         return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(value = RenderableException.class)
+    public ResponseEntity<ExceptionResponse> handleRenderableException(RenderableException e){
+        return new ResponseEntity<>(e.getExceptionResponse(), e.getErrorCode());
+    }
 }

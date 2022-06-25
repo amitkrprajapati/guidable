@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -16,5 +17,5 @@ import javax.persistence.Id;
 @AttributeOverride(name = "id",column = @Column(name = "roadmap_id",length = 16))
 public class SharableResourceView extends BaseEntity{
     String userToken;
-    String resourceId;
+    UUID resourceId;
 }

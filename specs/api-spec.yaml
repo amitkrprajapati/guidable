@@ -6,9 +6,9 @@ info:
 servers:
   - url: http://localhost/8081
 paths:
-  /journey:
+  /journeys:
     post:
-      summary: Create a Jouneys
+      summary: Create a Jouney
       operationId: createJourney
       parameters:
         - $ref: "#/components/parameters/AuthorizationHeader"
@@ -20,20 +20,100 @@ paths:
               $ref: '#/components/schemas/CreateJourneyDetail'
         required: true
       responses:
-        200:
+        201:
           description: Journey Created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/JourneyResponse'
+    get:
+      summary: List all Journeys
+      operationId: listJourney
+      parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
+        - $ref: "#/components/parameters/LimitQueryParam"
+        - $ref: "#/components/parameters/PageQueryParam"
+      responses:
+        200:
+          description: Journey Created
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/JourneyResponse'
+
+  /journeys/{journeyId}:
+    get:
+      summary: Get a jouney
+      operationId: getJourney
+      parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
+        - $ref: "#/components/parameters/JourneyIdPathParam"
+      responses:
+        201:
+          description: Journey Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JourneyResponse'
+    put:
+      summary: Update Journey Detail
+      operationId: updateJourney
+      parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
+        - $ref: "#/components/parameters/JourneyIdPathParam"
+      requestBody:
+        description: Journey details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateJourneyDetail'
+        required: true
+      responses:
+        200:
+          description: Journey Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JourneyResponse'
+    delete:
+      summary: Delete a Journey
+      operationId: deleteJourney
+      parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
+        - $ref: "#/components/parameters/JourneyIdPathParam"
+
+      responses:
+        200:
+          description: Journey Deleted
+
+  /journeys/clone/{linkKey}:
+    post:
+      summary: Clone a Jouney in your tenancy from apublic Journey
+      operationId: cloneJourney
+      parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
+        - $ref: "#/components/parameters/LinkKeyPathParam"
+      responses:
+        201:
+          description: Journey Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JourneyResponse'
+
   /roadmaps:
     get:
       parameters:
         - $ref: "#/components/parameters/AuthorizationHeader"
+        - $ref: "#/components/parameters/JourneyIdQueryParam"
+        - $ref: "#/components/parameters/LimitQueryParam"
+        - $ref: "#/components/parameters/PageQueryParam"
       summary: Get List of Roadmaps
-      operationId: getRoadMaps
+      operationId: listRoadmap
       responses:
-        201:
+        200:
           description: successful operation
           content:
             application/json:
@@ -54,25 +134,22 @@ paths:
               $ref: '#/components/schemas/CreateRoadmapDetail'
         required: true
       responses:
-        200:
+        201:
           description: Roadmap Created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/RoadmapResponse'
-      x-codegen-request-body-name: roadmaps
+
   /roadmaps/{roadmapId}:
     get:
       parameters:
-        - name: roadmapId
-          in: path
-          required: true
-          schema:
-            type: string
-      summary: Get List of Roadmaps
-      operationId: getRoadMap
+        - $ref: "#/components/parameters/AuthorizationHeader"
+        - $ref: "#/components/parameters/RoadmapIdPathParam"
+      summary: Get a Roadmap
+      operationId: getRoadmap
       responses:
-        201:
+        200:
           description: successful operation
           content:
             application/json:
@@ -80,11 +157,8 @@ paths:
                 $ref: '#/components/schemas/RoadmapResponse'
     put:
       parameters:
-        - name: roadmapId
-          in: path
-          required: true
-          schema:
-            type: string
+        - $ref: "#/components/parameters/AuthorizationHeader"
+        - $ref: "#/components/parameters/RoadmapIdPathParam"
       summary: Update a Roadmap
       operationId: updateRoadmap
       requestBody:
@@ -101,15 +175,128 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RoadmapResponse'
-          x-codegen-request-body-name: roadmaps
-  /roadmaps/{roadmapId}/actions/enableShareLink:
-    post:
+    delete:
+      summary: Delete a Roadmap
+      operationId: deleteRoadmap
       parameters:
-        - name: roadmapId
-          in: path
-          required: true
-          schema:
-            type: string
+        - $ref: "#/components/parameters/AuthorizationHeader"
+        - $ref: "#/components/parameters/RoadmapIdPathParam"
+      responses:
+        200:
+          description: Roadmap Deleted
+
+  /roadmaps/clone/{linkKey}:
+    post:
+      summary: Clone a Roadmap from public Roadmap
+      operationId: cloneRoadmap
+      parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
+        - $ref: "#/components/parameters/LinkKeyPathParam"
+      requestBody:
+        description: Clone Roadmap details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CloneRoadmapDetail'
+        required: true
+      responses:
+        201:
+          description: Roadmap Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoadmapResponse'
+
+  /checkpoints:
+    get:
+      parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
+        - $ref: "#/components/parameters/RoadmapIdQueryParam"
+        - $ref: "#/components/parameters/LimitQueryParam"
+        - $ref: "#/components/parameters/PageQueryParam"
+      summary: Get List of Checkpoint in a roadmap
+      operationId: listCheckpoint
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CheckpointResponse'
+    post:
+      summary: Create a checkpoint
+      operationId: createCheckpoint
+      parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
+      requestBody:
+        description: Checkpoint details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCheckpointDetail'
+        required: true
+      responses:
+        201:
+          description: Checkpoint Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckpointResponse'
+
+  /checkpoint/{checkpointId}:
+    get:
+      parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
+        - $ref: "#/components/parameters/CheckpointIdPathParam"
+      summary: Get a checkpoint
+      operationId: getCheckpoint
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckpointResponse'
+    put:
+      parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
+        - $ref: "#/components/parameters/CheckpointIdPathParam"
+      summary: Update a Checkpoint
+      operationId: updateCheckpoint
+      requestBody:
+        description: Roadmap details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCheckpointDetail'
+        required: true
+      responses:
+        200:
+          description: Roadmap updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckpointResponse'
+
+    delete:
+      summary: Delete a Checkpoint
+      operationId: deleteCheckpoint
+      parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
+        - $ref: "#/components/parameters/CheckpointIdPathParam"
+      responses:
+        200:
+          description: Checkpoint Deleted
+
+  /sharableResource/{resourceId}/actions/enableShareLink:
+    put:
+      parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
+        - $ref: "#/components/parameters/ResourceIdPathParam"
+
+        - $ref: "#/components/parameters/PublicResourceTypeQueryParam"
       summary: Create a sharable public link
       operationId: enableShareLink
       responses:
@@ -118,15 +305,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RoadmapResponse'
-  /roadmaps/{roadmapId}/actions/disableShareLink:
-    post:
+                $ref: '#/components/schemas/SharableResourceResponse'
+
+  /sharableResource/{resourceId}/actions/disableShareLink:
+    put:
       parameters:
-        - name: roadmapId
-          in: path
-          required: true
-          schema:
-            type: string
+        - $ref: "#/components/parameters/AuthorizationHeader"
+        - $ref: "#/components/parameters/ResourceIdPathParam"
       summary: Mark resource as private
       operationId: disableShareLink
       responses:
@@ -135,17 +320,37 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RoadmapResponse'
+                $ref: '#/components/schemas/SharableResourceResponse'
 
+  /sharableResource/{resourceId}/actions/like:
+    post:
+      parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
+        - $ref: "#/components/parameters/ResourceIdPathParam"
+        - $ref: "#/components/parameters/PublicResourceTypeQueryParam"
+      summary: Like public resource
+      operationId: likeResource
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SharableResourceResponse'
+    delete:
+      parameters:
+        - $ref: "#/components/parameters/ResourceIdPathParam"
+        - $ref: "#/components/parameters/PublicResourceTypeQueryParam"
+      summary: Unlike public resource
+      operationId: unlikeResource
+      responses:
+        202:
+          description: successful operation
 
-  /search/findByLinkKey/{linkKey}:
+  /public/findByLinkKey/{linkKey}:
     get:
       parameters:
-        - name: linkKey
-          in: path
-          required: true
-          schema:
-            type: string
+        - $ref: "#/components/parameters/LinkKeyPathParam"
       summary: Find a shared resource by linkKey
       operationId: findByLinkKey
       responses:
@@ -155,6 +360,58 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SharableResourceResponse'
+
+  /public/getRoadmaps:
+    get:
+      parameters:
+        - $ref: "#/components/parameters/LimitQueryParam"
+        - $ref: "#/components/parameters/PageQueryParam"
+        - $ref: "#/components/parameters/SharableResoureceSortByQueryParam"
+      summary: Get top roadmaps
+      operationId: getTopRoadmaps
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoadmapResponse'
+
+  /public/getJourneys:
+    get:
+      parameters:
+        - $ref: "#/components/parameters/LimitQueryParam"
+        - $ref: "#/components/parameters/PageQueryParam"
+        - $ref: "#/components/parameters/SharableResoureceSortByQueryParam"
+      summary: Get top journeys
+      operationId: getTopJourneys
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/JourneyResponse'
+
+  /public/{resourceId}/actions/view:
+    post:
+      parameters:
+        - $ref: "#/components/parameters/ResourceIdPathParam"
+        - $ref: "#/components/parameters/PublicResourceTypeQueryParam"
+      summary: View public resource
+      operationId: viewResource
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SharableResourceResponse'
+
 
 components:
   schemas:
@@ -167,8 +424,16 @@ components:
         description:
           type: string
           example: "Explore this journey to be a ML engineer"
-        isSharable:
-          type: boolean
+
+    UpdateJourneyDetail:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Journey to ML Engineer"
+        description:
+          type: string
+          example: "Explore this journey to be a ML engineer"
 
     CreateRoadmapDetail:
       type: object
@@ -179,15 +444,9 @@ components:
         description:
           type: string
           example: "Explore this roadmap to be a ML engineer"
-        parentId:
+        journeyId:
           type: string
-          example: "id-of-roadmap-collection"
-        checkpoints:
-          type: array
-          items:
-            $ref: "#/components/schemas/Checkpoints"
-        isSharable:
-          type: boolean
+          example: "Journey Id"
 
     UpdateRoadmapDetail:
       type: object
@@ -198,19 +457,10 @@ components:
         description:
           type: string
           example: "Explore this roadmap to be a ML engineer"
-        checkpoints:
-          type: array
-          items:
-            $ref: "#/components/schemas/Checkpoints"
-        isSharable:
-          type: boolean
 
-
-    Checkpoints:
+    CreateCheckpointDetail:
       type: object
       properties:
-        checkpointKey:
-          type: string
         name:
           type: string
         shortDescription:
@@ -221,6 +471,33 @@ components:
           type: string
         isComplete:
           type: boolean
+
+    UpdateCheckpointDetail:
+      type: object
+      properties:
+        name:
+          type: string
+        shortDescription:
+          type: string
+        detailedDescription:
+          type: string
+        quickLink:
+          type: string
+        isComplete:
+          type: boolean
+
+    CloneRoadmapDetail:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Journey to ML Engineer"
+        description:
+          type: string
+          example: "Explore this roadmap to be a ML engineer"
+        journeyId:
+          type: string
+          example: "Journey Id"
 
     SharableResourcePublicMetadata:
       type: object
@@ -250,13 +527,8 @@ components:
         description:
           type: string
           example: "Explore this roadmap to be a ML engineer"
-        parentId:
+        journeyId:
           type: string
-          example: "id-of-roadmap-collection"
-        checkpoints:
-          type: array
-          items:
-            $ref: "#/components/schemas/Checkpoints"
         originalAuthor:
           type: string
         updatedBy:
@@ -283,24 +555,44 @@ components:
         publicMetadata:
           $ref: "#/components/schemas/SharableResourcePublicMetadata"
 
+    CheckpointResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        shortDescription:
+          type: string
+        detailedDescription:
+          type: string
+        quickLink:
+          type: string
+        isComplete:
+          type: boolean
+
+
     SharableResource:
       oneOf:
         - $ref: '#/components/schemas/RoadmapResponse'
         - $ref: '#/components/schemas/JourneyResponse'
 
+    PublicResourceType:
+      type: string
+      enum:
+        - ROADMAP
+        - JOURNEY
+
     SharableResourceResponse:
       type: object
       properties:
         objectType:
-          type: string
-          enum:
-            - ROADMAP
-            - ROADMAP_COLLECTION
+          $ref: '#/components/schemas/PublicResourceType'
         publicResource:
           $ref: '#/components/schemas/SharableResource'
 
   parameters:
-    ## Headers
+    ## Headers as Parameter
     AuthorizationHeader:
       name: Authorization
       in: header
@@ -309,7 +601,86 @@ components:
       required: true
 
 
+    ## Paths as Parameter
 
+    JourneyIdPathParam:
+      name: journeyId
+      in: path
+      required: true
+      schema:
+        type: string
 
+    RoadmapIdPathParam:
+      name: roadmapId
+      in: path
+      required: true
+      schema:
+        type: string
 
+    ResourceIdPathParam:
+      name: resourceId
+      in: path
+      required: true
+      schema:
+        type: string
 
+    LinkKeyPathParam:
+      name: linkKey
+      in: path
+      required: true
+      schema:
+        type: string
+
+    CheckpointIdPathParam:
+      name: checkpointId
+      in: path
+      required: true
+      schema:
+        type: string
+
+    ## Queries as Parameter
+    JourneyIdQueryParam:
+      name: journeyId
+      in: query
+      required: true
+      schema:
+        type: string
+
+    RoadmapIdQueryParam:
+      name: roadmapIdQueryParam
+      in: query
+      required: true
+      schema:
+        type: string
+
+    PublicResourceTypeQueryParam:
+      name: resourceType
+      in: query
+      required: true
+      schema:
+        $ref: '#/components/schemas/PublicResourceType'
+
+    LimitQueryParam:
+      name: limit
+      in: query
+      required: true
+      schema:
+        type: integer
+
+    PageQueryParam:
+      name: page
+      in: query
+      required: true
+      schema:
+        type: integer
+
+    SharableResoureceSortByQueryParam:
+      name: sortby
+      in: query
+      required: true
+      schema:
+        type: string
+        enum:
+          - VIEWS
+          - LIKES
+          - CLONES

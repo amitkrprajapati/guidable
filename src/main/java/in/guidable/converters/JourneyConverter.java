@@ -13,7 +13,9 @@ public class JourneyConverter {
                 .name(createJourneyDetail.getName())
                 .description(createJourneyDetail.getDescription())
                 .publicMetadata(PublicMetadata.builder()
-                        .isSharable(createJourneyDetail.getIsSharable())
+                        .isSharable(false)
+                        .likeCount(0L)
+                        .viewCount(0L)
                         .build())
                 .build();
     }
