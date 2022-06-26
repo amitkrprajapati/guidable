@@ -15,7 +15,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"customerUserName\": \"Amit\",\n  \"customerEmail\": \"amit@gmail.com\",\n  \"customerPassword\": \"amit123\"\n}",
+					"raw": "{\n  \"customerUserName\": \"Amit\",\n  \"customerEmail\": \"amit@gmail.com\",\n  \"customerPassword\": \"amit123\",\n  \"userRole\": \"ROLE_USER\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -80,13 +80,53 @@
 			"response": []
 		},
 		{
-			"name": "CreateRoadmap",
+			"name": "CreateJouney",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
 							"if (pm.response.code === 200) {",
+							"    var jsonData = JSON.parse(responseBody);",
+							"    postman.setEnvironmentVariable(\"journeyId\", jsonData.id);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Journey to ML Engineer\",\n  \"description\": \"Explore this journey to be a ML engineer\",\n  \"isSharable\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{server}}/journeys",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"journeys"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateRoadmap",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 201) {",
 							"    var jsonData = JSON.parse(responseBody);",
 							"    postman.setEnvironmentVariable(\"roadmapId\", jsonData.id);",
 							"}"
@@ -100,7 +140,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"id\": \"12345\",\n  \"name\": \"Journey to ML Engineer\",\n  \"description\": \"Explore this roadmap to be a ML engineer\",\n  \"parentId\": \"id-of-roadmap-collection\",\n  \"checkpoints\": [\n    {\n      \"checkpointKey\": \"string\",\n      \"name\": \"string\",\n      \"shortDescription\": \"string\",\n      \"detailedDescription\": \"string\",\n      \"quickLink\": \"string\",\n      \"isComplete\": true\n    }\n  ],\n  \"originalAuthor\": \"string\",\n  \"updatedBy\": \"string\",\n  \"isSharable\": true\n}",
+					"raw": "{\n  \"name\": \"Roadmap to learn statistics\",\n  \"description\": \"Explore this roadmap to be a ML engineer\",\n  \"journeyId\": \"{{journeyId}}\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -120,35 +160,186 @@
 			"response": []
 		},
 		{
-			"name": "GetRoadmap",
-			"request": {
-				"method": "GET",
-				"header": []
-			},
-			"response": []
-		},
-		{
-			"name": "ActionCreateLinkKey",
+			"name": "CreateRoadmap Invalid journeyId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {",
+							"    var jsonData = JSON.parse(responseBody);",
+							"    postman.setEnvironmentVariable(\"roadmapId\", jsonData.id);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Roadmap to learn statistics\",\n  \"description\": \"Explore this roadmap to be a ML engineer\",\n  \"journeyId\": \"{{journeyId}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "{{server}}/roadmaps/{{roadmapId}}/actions/makeSharable",
+					"raw": "{{server}}/roadmaps",
 					"host": [
 						"{{server}}"
 					],
 					"path": [
-						"roadmaps",
-						"{{roadmapId}}",
-						"actions",
-						"makeSharable"
+						"roadmaps"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "ActionDisableLinkKey",
+			"name": "CreateRoadmapWithInvalidToken",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {",
+							"    var jsonData = JSON.parse(responseBody);",
+							"    postman.setEnvironmentVariable(\"roadmapId\", jsonData.id);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Roadmap to learn statistics\",\n  \"description\": \"Explore this roadmap to be a ML engineer\",\n  \"journeyId\": \"{{journeyId}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{server}}/roadmaps",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"roadmaps"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Roadmap",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{server}}/roadmaps?journeyId={{roadmapID}}&page=2&limit=3",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"roadmaps"
+					],
+					"query": [
+						{
+							"key": "journeyId",
+							"value": "{{roadmapID}}"
+						},
+						{
+							"key": "page",
+							"value": "2"
+						},
+						{
+							"key": "limit",
+							"value": "3"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetRoadmap",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{server}}/roadmaps/{{roadmapId}}",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"roadmaps",
+						"{{roadmapId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Roadmap",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{server}}/roadmaps/{{roadmapId}}",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"roadmaps",
+						"{{roadmapId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Roadmap",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{server}}/roadmaps/{{roadmapId}}",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"roadmaps",
+						"{{roadmapId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ActionCreateLinkKey",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {",
+							"    var jsonData = JSON.parse(responseBody);",
+							"    postman.setEnvironmentVariable(\"linkKey\", jsonData.publicMetadata.publicLinkKey);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -162,6 +353,26 @@
 						"{{roadmapId}}",
 						"actions",
 						"enableShareLink"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ActionDisableLinkKey",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{server}}/roadmaps/{{roadmapId}}/actions/disableShareLink",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"roadmaps",
+						"{{roadmapId}}",
+						"actions",
+						"disableShareLink"
 					]
 				}
 			},
@@ -191,6 +402,14 @@
 						"{{roadmapId}}"
 					]
 				}
+			},
+			"response": []
+		},
+		{
+			"name": "SearchByLinkKey",
+			"request": {
+				"method": "GET",
+				"header": []
 			},
 			"response": []
 		}

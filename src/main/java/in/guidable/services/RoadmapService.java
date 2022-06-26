@@ -38,7 +38,7 @@ public class RoadmapService {
     private final SharableResourceLikeRepo sharableResourceLikeRepo;
     private final SharableLinkKeyResourceMapRepo sharableLinkKeyResourceMapRepo;
 
-    public RoadmapResponse createRoadmap(String userName, CreateRoadmapDetail createRoadmapDetail) {
+    public Roadmap createRoadmap(String userName, CreateRoadmapDetail createRoadmapDetail) {
         Customer customer = customerRepo
                 .findByCustomerUserName(userName)
                 .orElseThrow(()-> RenderableExceptionGenerator.generateInvalidUserException(userName));
@@ -54,11 +54,10 @@ public class RoadmapService {
                 .originalAuthor(customer.getCustomerUserName())
                 .updatedBy(customer.getCustomerUserName())
                 .build();
-        Roadmap roadmap = roadmapRepo.save(newRoadmap);
-        return RoadmapConverter.toRoadmapResponse(roadmap);
+        return roadmapRepo.save(newRoadmap);
     }
 
-    public List<RoadmapResponse> listRoadmap(String userName, String journeyId, Integer limit, Integer page) {
+    public Page<Roadmap> listRoadmap(String userName, String journeyId, Integer limit, Integer page) {
 
         Customer customer = customerRepo
                 .findByCustomerUserName(userName)
@@ -67,25 +66,37 @@ public class RoadmapService {
                 .findByIdAndCustomer(UUID.fromString(journeyId), customer)
                 .orElseThrow(()->RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException("Journey", journeyId));
         Pageable pageable = PageRequest.of(page, limit);
-        Page<Roadmap> roadmapList = roadmapRepo.findAllByJourney(journey, pageable);
-        return roadmapList
-                .stream()
-                .map(RoadmapConverter::toRoadmapResponse)
-                .collect(Collectors.toList());
+        return roadmapRepo.findAllByJourney(journey, pageable);
 
     }
 
-    public RoadmapResponse getRoadMap(String userName, String roadmapId) {
+    public Roadmap getRoadmap(String userName, String roadmapId) {
         Customer customer = customerRepo
                 .findByCustomerUserName(userName)
                 .orElseThrow(()-> RenderableExceptionGenerator.generateInvalidUserException(userName));
 
-        Roadmap roadmap = roadmapRepo
+        return roadmapRepo
                 .findByIdAndCustomer(UUID.fromString(roadmapId), customer)
                 .orElseThrow(()->RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException("Roadmap", roadmapId));
-        return RoadmapConverter.toRoadmapResponse(roadmap);
     }
 
+    @Transactional
+    public Roadmap updateRoadmap(String userName, String roadmapId, UpdateRoadmapDetail updateRoadmapDetail) {
+        Roadmap roadmap = getRoadmap(userName, roadmapId);
+
+        roadmap.setUpdatedBy(userName);
+        roadmap.setName(updateRoadmapDetail.getName());
+        roadmap.setDescription(updateRoadmapDetail.getDescription());
+        return roadmapRepo.save(roadmap);
+    }
+
+    @Transactional
+    public void deleteRoadmap(String userName, String roadmapId) {
+        Customer customer = customerRepo
+                .findByCustomerUserName(userName)
+                .orElseThrow(()-> RenderableExceptionGenerator.generateInvalidUserException(userName));
+        roadmapRepo.deleteByIdAndCustomer(UUID.fromString(roadmapId), customer);
+    }
     @Transactional
     public RoadmapResponse enableShareLink(String roadmapId) {
         Roadmap roadmap = roadmapRepo.findById(UUID.fromString(roadmapId)).orElseThrow(EntityNotFoundException::new);
@@ -120,15 +131,5 @@ public class RoadmapService {
         return RoadmapConverter.toRoadmapResponse(roadmap);
     }
 
-    @Transactional
-    public RoadmapResponse updateRoadmap(String roadmapId, UpdateRoadmapDetail updataRoadmapDetail) {
-        Roadmap roadmap = roadmapRepo.findById(UUID.fromString(roadmapId)).orElseThrow(EntityNotFoundException::new);
-//        checkpointRepo.deleteCheckpointsByRoadmapId(roadmapId);
-        roadmap.setName(updataRoadmapDetail.getName());
-        roadmap.setDescription(updataRoadmapDetail.getDescription());
-        roadmap.setName(updataRoadmapDetail.getName());
-        roadmap.setUpdatedBy("todo_place_holder");
 
-        return RoadmapConverter.toRoadmapResponse(roadmap);
-    }
 }
