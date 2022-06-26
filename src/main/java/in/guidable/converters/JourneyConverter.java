@@ -22,6 +22,7 @@ public class JourneyConverter {
 
     public static JourneyResponse toJourneyResponse(Journey journey) {
         return new JourneyResponse()
+                .id(journey.getId().toString())
                 .name(journey.getName())
                 .description(journey.getDescription());
     }

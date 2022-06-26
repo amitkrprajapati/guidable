@@ -35,7 +35,7 @@ paths:
         - $ref: "#/components/parameters/PageQueryParam"
       responses:
         200:
-          description: Journey Created
+          description: Successful response
           content:
             application/json:
               schema:
@@ -51,8 +51,8 @@ paths:
         - $ref: "#/components/parameters/AuthorizationHeader"
         - $ref: "#/components/parameters/JourneyIdPathParam"
       responses:
-        201:
-          description: Journey Created
+        200:
+          description: Successful response
           content:
             application/json:
               schema:
@@ -71,7 +71,7 @@ paths:
               $ref: '#/components/schemas/UpdateJourneyDetail'
         required: true
       responses:
-        200:
+        202:
           description: Journey Updated
           content:
             application/json:
@@ -104,23 +104,6 @@ paths:
                 $ref: '#/components/schemas/JourneyResponse'
 
   /roadmaps:
-    get:
-      parameters:
-        - $ref: "#/components/parameters/AuthorizationHeader"
-        - $ref: "#/components/parameters/JourneyIdQueryParam"
-        - $ref: "#/components/parameters/LimitQueryParam"
-        - $ref: "#/components/parameters/PageQueryParam"
-      summary: Get List of Roadmaps
-      operationId: listRoadmap
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/RoadmapResponse'
     post:
       summary: Create a Roadmap
       operationId: createRoadmap
@@ -140,6 +123,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RoadmapResponse'
+    get:
+      parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
+        - $ref: "#/components/parameters/JourneyIdQueryParam"
+        - $ref: "#/components/parameters/LimitQueryParam"
+        - $ref: "#/components/parameters/PageQueryParam"
+      summary: Get List of Roadmaps
+      operationId: listRoadmap
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoadmapResponse'
+
 
   /roadmaps/{roadmapId}:
     get:
@@ -647,7 +648,7 @@ components:
         type: string
 
     RoadmapIdQueryParam:
-      name: roadmapIdQueryParam
+      name: roadmapId
       in: query
       required: true
       schema:
