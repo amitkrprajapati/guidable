@@ -4,8 +4,8 @@ import in.guidable.entities.Journey;
 import in.guidable.entities.PublicMetadata;
 import in.guidable.model.CreateJourneyDetail;
 import in.guidable.model.JourneyResponse;
+import org.modelmapper.ModelMapper;
 
-import java.util.stream.Collectors;
 
 public class JourneyConverter {
     public static Journey toJourneyEntity(CreateJourneyDetail createJourneyDetail) {
@@ -21,8 +21,9 @@ public class JourneyConverter {
     }
 
     public static JourneyResponse toJourneyResponse(Journey journey) {
-        return new JourneyResponse()
-                .name(journey.getName())
-                .description(journey.getDescription());
+        ModelMapper modelMapper = new ModelMapper();
+        JourneyResponse response = modelMapper.map(journey,JourneyResponse.class);
+        response.setId(journey.getId().toString());
+        return response;
     }
 }
