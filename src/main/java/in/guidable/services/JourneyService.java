@@ -27,7 +27,7 @@ public class JourneyService {
 
     @Transactional
     public Journey createJourney(String userName, CreateJourneyDetail createJourneyDetail) {
-        Customer customer = customerRepo.findByCustomerUserName(userName).orElseThrow(()-> RenderableExceptionGenerator.generateEntityNotFoundException("Customer",userName));
+        Customer customer = customerRepo.findByCustomerUserName(userName).orElseThrow(()-> RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException("Customer",userName));
         Journey journey = JourneyConverter.toJourneyEntity(createJourneyDetail)
                 .toBuilder()
                 .originalAuthor(userName)
@@ -39,14 +39,14 @@ public class JourneyService {
     }
 
     public Page<Journey> getJourneyList(String userName, Integer limit, Integer page) {
-        Customer customer = customerRepo.findByCustomerUserName(userName).orElseThrow(()-> RenderableExceptionGenerator.generateEntityNotFoundException("Customer",userName));
+        Customer customer = customerRepo.findByCustomerUserName(userName).orElseThrow(()-> RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException("Customer",userName));
         Pageable paging = PageRequest.of(page,limit);
-        return journeyRepo.findByCustomer(customer, paging).orElseThrow(()-> RenderableExceptionGenerator.generateEntityNotFoundException("Journey",userName));
+        return journeyRepo.findByCustomer(customer, paging).orElseThrow(()-> RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException("Journey",userName));
     }
 
     public Journey getJourney(String userName, String journeyId) {
-        Customer customer = customerRepo.findByCustomerUserName(userName).orElseThrow(()-> RenderableExceptionGenerator.generateEntityNotFoundException("Customer",userName));
-        return journeyRepo.findByCustomerAndId(customer, UUID.fromString(journeyId)).orElseThrow(()-> RenderableExceptionGenerator.generateEntityNotFoundException("Journey",userName));
+        Customer customer = customerRepo.findByCustomerUserName(userName).orElseThrow(()-> RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException("Customer",userName));
+        return journeyRepo.findByCustomerAndId(customer, UUID.fromString(journeyId)).orElseThrow(()-> RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException("Journey",userName));
     }
 
     @Transactional
