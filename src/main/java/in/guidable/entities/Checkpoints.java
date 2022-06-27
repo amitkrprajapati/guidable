@@ -30,4 +30,8 @@ public class Checkpoints extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "roadmap_id", referencedColumnName = "roadmap_id")
     private Roadmap roadmap;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id", referencedColumnName = "customer_Id")
+    private Customer customer;
 }

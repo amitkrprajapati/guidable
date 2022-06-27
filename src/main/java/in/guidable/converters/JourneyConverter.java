@@ -6,6 +6,7 @@ import in.guidable.model.CreateJourneyDetail;
 import in.guidable.model.JourneyResponse;
 import org.modelmapper.ModelMapper;
 
+import java.util.stream.Collectors;
 
 public class JourneyConverter {
     public static Journey toJourneyEntity(CreateJourneyDetail createJourneyDetail) {
