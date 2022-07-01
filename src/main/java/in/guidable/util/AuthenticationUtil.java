@@ -1,6 +1,8 @@
 package in.guidable.util;
 
 
+import in.guidable.exceptions.RenderableException;
+import in.guidable.exceptions.RenderableExceptionGenerator;
 import in.guidable.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -9,13 +11,18 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AuthenticationUtil {
     private final JwtUtil jwtUtil;
-    public String getUserFromToken(String token)
+    public String getUserFromToken(String token) throws RenderableException
     {
-        String userName= "";
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.substring(7);
-            userName= jwtUtil.extractUsername(token);
+        try
+        {
+            if (token != null && token.startsWith("Bearer ")) {
+                token = token.substring(7);
+                return jwtUtil.extractUsername(token);
+            }
+        } catch (Exception e)
+        {
+            throw RenderableExceptionGenerator.generateInvalidAuthTokenException();
         }
-        return userName;
+        throw RenderableExceptionGenerator.generateInvalidAuthTokenException();
     }
 }
