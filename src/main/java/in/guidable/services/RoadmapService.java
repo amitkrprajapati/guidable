@@ -45,7 +45,7 @@ public class RoadmapService {
                 .orElseThrow(()-> RenderableExceptionGenerator.generateInvalidUserException(userName));
 
         Journey journey = journeyRepo
-                .findByIdAndCustomer(UUID.fromString(createRoadmapDetail.getJourneyId()), customer)
+                .findByCustomerAndId(customer,UUID.fromString(createRoadmapDetail.getJourneyId()))
                 .orElseThrow(()->RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException("Journey", createRoadmapDetail.getJourneyId()));
 
         Roadmap newRoadmap = RoadmapConverter.toRoadmapEntity(createRoadmapDetail)
@@ -65,7 +65,7 @@ public class RoadmapService {
                 .findByCustomerUserName(userName)
                 .orElseThrow(()-> RenderableExceptionGenerator.generateInvalidUserException(userName));
         Journey journey = journeyRepo
-                .findByIdAndCustomer(UUID.fromString(journeyId), customer)
+                .findByCustomerAndId(customer,UUID.fromString(journeyId))
                 .orElseThrow(()->RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException("Journey", journeyId));
         Pageable pageable = PageRequest.of(page, limit);
         return roadmapRepo.findAllByJourney(journey, pageable);
