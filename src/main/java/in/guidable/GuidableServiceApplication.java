@@ -11,13 +11,12 @@ import org.springframework.context.annotation.Import;
 @Import(GlobalExceptions.class)
 public class GuidableServiceApplication {
 
-    @Bean
-    ModelMapper modelMapper()
-    {
-        return new ModelMapper();
-    }
-    public static void main(String[] args) {
-        SpringApplication.run(GuidableServiceApplication.class, args);
-    }
+  @Bean
+  ModelMapper modelMapper() {
+    return new ModelMapper();
+  }
 
+  public static void main(String[] args) {
+    SpringApplication.run(GuidableServiceApplication.class, args);
+  }
 }

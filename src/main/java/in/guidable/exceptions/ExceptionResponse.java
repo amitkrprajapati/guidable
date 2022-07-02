@@ -10,6 +10,6 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 public class ExceptionResponse {
-    private int status;
-    private String message;
+  private int status;
+  private String message;
 }

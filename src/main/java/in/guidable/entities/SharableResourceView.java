@@ -1,21 +1,17 @@
 package in.guidable.entities;
 
-import lombok.Getter;
-import lombok.Setter;
-
+import java.util.UUID;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-@AttributeOverride(name = "id",column = @Column(name = "roadmap_id",length = 16))
-public class SharableResourceView extends BaseEntity{
-    String userToken;
-    UUID resourceId;
+@AttributeOverride(name = "id", column = @Column(name = "roadmap_id", length = 16))
+public class SharableResourceView extends BaseEntity {
+  String userToken;
+  UUID resourceId;
 }
