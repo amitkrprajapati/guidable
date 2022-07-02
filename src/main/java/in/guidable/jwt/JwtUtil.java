@@ -1,8 +1,11 @@
 package in.guidable.jwt;
 
+import in.guidable.entities.Customer;
+import in.guidable.repositories.CustomerRepo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +15,10 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@RequiredArgsConstructor
 public class JwtUtil {
 
+   private final CustomerRepo customerRepo;
     private String secret = "guidable";
 
     public String extractUsername(String token) {
@@ -28,7 +33,7 @@ public class JwtUtil {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
-    private Claims extractAllClaims(String token) {
+    public Claims extractAllClaims(String token) {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
     }
 
@@ -38,6 +43,8 @@ public class JwtUtil {
 
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
+        Customer customer = customerRepo.findByCustomerUserName(username).get();
+        claims.put("customerId",customer.getId());
         return createToken(claims, username);
     }
 
