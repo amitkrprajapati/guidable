@@ -120,6 +120,96 @@
 			"response": []
 		},
 		{
+			"name": "List Journeys",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{server}}/journeys?page=0&limit=3",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"journeys"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "limit",
+							"value": "3"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Journey",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{server}}/journeys/{{journeyId}}",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"journeys",
+						"{{journeyId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Journey",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Journey to JAVA Engineer\",\n  \"description\": \"Explore this journey to be a JAVA engineer\",\n  \"isSharable\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{server}}/journeys/{{journeyId}}",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"journeys",
+						"{{journeyId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Journey",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{server}}/journeys/{{journeyId}}",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"journeys",
+						"{{journeyId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "CreateRoadmap",
 			"event": [
 				{
