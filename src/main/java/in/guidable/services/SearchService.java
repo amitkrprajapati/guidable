@@ -4,10 +4,16 @@ import in.guidable.converters.RoadmapConverter;
 import in.guidable.entities.Roadmap;
 import in.guidable.entities.SharableLinkKeyResourceMap;
 import in.guidable.model.PublicResourceType;
+import in.guidable.model.RoadmapResponse;
 import in.guidable.model.SharableResourceResponse;
+import in.guidable.model.SortByType;
 import in.guidable.repositories.RoadmapRepo;
 import in.guidable.repositories.SharableLinkKeyResourceMapRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -35,5 +41,10 @@ public class SearchService {
             }
         }
         throw new EntityNotFoundException();
+    }
+
+    public Page<Roadmap> getTopPublicRoadmaps(Integer limit, Integer page, SortByType sortBy) {
+        Pageable pageable = PageRequest.of(page, limit, Sort.by("publicMetadata." + sortBy.getValue()));
+        return roadmapRepo.getAllBySharedRoadmaps(pageable);
     }
 }

@@ -28,7 +28,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @AttributeOverride(name = "id",column = @Column(name = "journey_id",length = 16))
-public class Journey extends BaseEntity{
+public class Journey extends SharableEntity{
     private String name;
     private String description;
     private String originalAuthor;

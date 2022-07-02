@@ -5,6 +5,7 @@ import in.guidable.entities.Customer;
 import in.guidable.entities.Journey;
 import in.guidable.model.CreateJourneyDetail;
 import in.guidable.model.JourneyResponse;
+import in.guidable.model.SharableResource;
 import in.guidable.repositories.CustomerRepo;
 import in.guidable.repositories.JourneyRepo;
 import lombok.RequiredArgsConstructor;
@@ -21,5 +22,10 @@ public class JourneyService {
         Journey journey = JourneyConverter.toJourneyEntity(createJourneyDetail);
         journey.setCustomer(customer);
         return JourneyConverter.toJourneyResponse(journeyRepo.save(journey));
+    }
+
+    public SharableResource enableShareLink(String userName, String resourceId) {
+        //Todo:
+        return null;
     }
 }

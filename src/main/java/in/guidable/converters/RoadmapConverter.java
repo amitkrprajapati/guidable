@@ -14,7 +14,6 @@ public class RoadmapConverter {
         return Roadmap.builder()
                 .name(createRoadmapDetail.getName())
                 .description(createRoadmapDetail.getDescription())
-                .publicMetadata(new PublicMetadata())
                 .build();
     }
 
