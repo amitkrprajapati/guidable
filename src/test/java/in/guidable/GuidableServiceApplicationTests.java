@@ -7,5 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class GuidableServiceApplicationTests {
 
   @Test
-  void contextLoads() {}
+  void contextLoads() {
+    assert (true);
+  }
 }

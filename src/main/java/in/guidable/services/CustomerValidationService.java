@@ -2,7 +2,11 @@ package in.guidable.services;
 
 import in.guidable.entities.Customer;
 import in.guidable.entities.VerificationToken;
-import in.guidable.exceptions.*;
+import in.guidable.exceptions.CustomerNotEnabledException;
+import in.guidable.exceptions.CustomerPresnetException;
+import in.guidable.exceptions.InvalidCredentialsException;
+import in.guidable.exceptions.MaxRetryExpiredExpetion;
+import in.guidable.exceptions.TokenExpiredException;
 import in.guidable.model.AuthRequest;
 import in.guidable.model.SignUpDTO;
 import in.guidable.repositories.CustomerRepo;
@@ -67,7 +71,9 @@ public class CustomerValidationService {
   public void checkIfCustomerEnabled(AuthRequest authRequest) {
     boolean isCustomerEnabled =
         customerRepo.findByCustomerUserName(authRequest.getUserName()).get().isEnabled();
-    if (!isCustomerEnabled) throw new CustomerNotEnabledException("Customer Not Enabled");
+    if (!isCustomerEnabled) {
+      throw new CustomerNotEnabledException("Customer Not Enabled");
+    }
   }
 
   public void saveVerificationTokenForUser(String token, Customer customer) {
@@ -82,7 +88,9 @@ public class CustomerValidationService {
     if (verificationToken == null) {
       throw new InvalidCredentialsException("Invalid Token");
     }
-    if (verificationToken.isVerified()) return "Verification Is Already Completed Goto Login Page";
+    if (verificationToken.isVerified()) {
+      return "Verification Is Already Completed Goto Login Page";
+    }
 
     Customer customer = verificationToken.getCustomer();
     Calendar cal = Calendar.getInstance();
@@ -107,10 +115,12 @@ public class CustomerValidationService {
         verificationTokenRepository.getVerificationTokenByUserId(customer.getId());
 
     if (oldVerificationToken != null) {
-      if (oldVerificationToken.isVerified())
+      if (oldVerificationToken.isVerified()) {
         return "Verification Is Already Completed Goto Login Page";
-      if (oldVerificationToken.getRetryCount() == 2)
+      }
+      if (oldVerificationToken.getRetryCount() == 2) {
         throw new MaxRetryExpiredExpetion("Max retry expired");
+      }
       Calendar cal = Calendar.getInstance();
       if ((oldVerificationToken.getExpirationTime().getTime() - cal.getTime().getTime()) <= 0) {
         verificationTokenRepository.delete(oldVerificationToken);

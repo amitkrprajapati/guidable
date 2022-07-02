@@ -26,7 +26,7 @@ public interface SharableLinkKeyResourceMapRepo
 
   default String generateUniqueLinkKey() {
     int itr = 0;
-    int MAX_ITERATION_FOR_FINDING_LINK_KEY = 50;
+    final int MAX_ITERATION_FOR_FINDING_LINK_KEY = 50;
     while (itr++ < MAX_ITERATION_FOR_FINDING_LINK_KEY) {
       String linkKey = RandomStringUtils.randomAlphanumeric(6);
 

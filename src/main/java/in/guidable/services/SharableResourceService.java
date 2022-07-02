@@ -71,6 +71,9 @@ public class SharableResourceService {
       case JOURNEY:
         // TODO
         break;
+
+      default:
+        throw RenderableExceptionGenerator.generateInternalServerError();
     }
     return sharableEntity;
   }
@@ -85,6 +88,8 @@ public class SharableResourceService {
       case JOURNEY:
         //                journeyRepo.save((Journey) sharableEntity);
         break;
+      default:
+        throw RenderableExceptionGenerator.generateInternalServerError();
     }
     return savedEntity;
   }
@@ -98,6 +103,8 @@ public class SharableResourceService {
         break;
       case JOURNEY:
         break;
+      default:
+        throw RenderableExceptionGenerator.generateInternalServerError();
     }
     return sharableResource;
   }
