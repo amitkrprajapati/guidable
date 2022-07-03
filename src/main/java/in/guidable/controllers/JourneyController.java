@@ -6,9 +6,11 @@ import in.guidable.entities.Journey;
 import in.guidable.model.CreateJourneyDetail;
 import in.guidable.model.JourneyResponse;
 import in.guidable.model.UpdateJourneyDetail;
+import in.guidable.models.CustomerModel;
 import in.guidable.services.JourneyService;
 import in.guidable.util.AuthenticationUtil;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,17 +27,17 @@ public class JourneyController implements JourneysApi {
   @Override
   public ResponseEntity<JourneyResponse> createJourney(
       String authorization, CreateJourneyDetail createJourneyDetail) {
-    String userName = authenticationUtil.getUserFromToken(authorization);
+    CustomerModel customerModel = authenticationUtil.getCustomerModelFromToken(authorization);
     return ResponseEntity.ok(
         JourneyConverter.toJourneyResponse(
-            journeyService.createJourney(userName, createJourneyDetail)));
+            journeyService.createJourney(customerModel, createJourneyDetail)));
   }
 
   @Override
   public ResponseEntity<List<JourneyResponse>> listJourney(
       String authorization, Integer limit, Integer page) {
-    String userName = authenticationUtil.getUserFromToken(authorization);
-    Page<Journey> journeyList = journeyService.getJourneyList(userName, limit, page);
+    CustomerModel customerModel = authenticationUtil.getCustomerModelFromToken(authorization);
+    Page<Journey> journeyList = journeyService.getJourneyList(customerModel, limit, page);
     return ResponseEntity.ok(
         journeyList.getContent().stream()
             .map(JourneyConverter::toJourneyResponse)
@@ -43,25 +45,25 @@ public class JourneyController implements JourneysApi {
   }
 
   @Override
-  public ResponseEntity<JourneyResponse> getJourney(String authorization, String journeyId) {
-    String userName = authenticationUtil.getUserFromToken(authorization);
+  public ResponseEntity<JourneyResponse> getJourney(String authorization, UUID journeyId) {
+    CustomerModel customerModel = authenticationUtil.getCustomerModelFromToken(authorization);
     return ResponseEntity.ok(
-        JourneyConverter.toJourneyResponse(journeyService.getJourney(userName, journeyId)));
+        JourneyConverter.toJourneyResponse(journeyService.getJourney(customerModel, journeyId)));
   }
 
   @Override
   public ResponseEntity<JourneyResponse> updateJourney(
-      String authorization, String journeyId, UpdateJourneyDetail updateJourneyDetail) {
-    String userName = authenticationUtil.getUserFromToken(authorization);
+      String authorization, UUID journeyId, UpdateJourneyDetail updateJourneyDetail) {
+    CustomerModel customerModel = authenticationUtil.getCustomerModelFromToken(authorization);
     return ResponseEntity.ok(
         JourneyConverter.toJourneyResponse(
-            journeyService.updateJourney(userName, journeyId, updateJourneyDetail)));
+            journeyService.updateJourney(customerModel, journeyId, updateJourneyDetail)));
   }
 
   @Override
-  public ResponseEntity<Void> deleteJourney(String authorization, String journeyId) {
-    String userName = authenticationUtil.getUserFromToken(authorization);
-    journeyService.deleteJourney(userName, journeyId);
+  public ResponseEntity<Void> deleteJourney(String authorization, UUID journeyId) {
+    CustomerModel customerModel = authenticationUtil.getCustomerModelFromToken(authorization);
+    journeyService.deleteJourney(customerModel, journeyId);
     return ResponseEntity.noContent().build();
   }
 }

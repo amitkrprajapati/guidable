@@ -448,6 +448,7 @@ components:
           example: "Explore this roadmap to be a ML engineer"
         journeyId:
           type: string
+          format: uuid
           example: "Journey Id"
 
     UpdateRoadmapDetail:
@@ -499,6 +500,7 @@ components:
           example: "Explore this roadmap to be a ML engineer"
         journeyId:
           type: string
+          format: uuid
           example: "Journey Id"
 
     SharableResourcePublicMetadata:
@@ -522,7 +524,7 @@ components:
       properties:
         id:
           type: string
-          example: '12345'
+          format: uuid
         name:
           type: string
           example: "Journey to ML Engineer"
@@ -531,6 +533,7 @@ components:
           example: "Explore this roadmap to be a ML engineer"
         journeyId:
           type: string
+          format: uuid
         originalAuthor:
           type: string
         updatedBy:
@@ -543,7 +546,7 @@ components:
       properties:
         id:
           type: string
-          example: '12345'
+          format: uuid
         name:
           type: string
           example: "Journey to ML Engineer"
@@ -562,6 +565,7 @@ components:
       properties:
         id:
           type: string
+          format: uuid
         name:
           type: string
         shortDescription:
@@ -618,6 +622,7 @@ components:
       required: true
       schema:
         type: string
+        format: uuid
 
     RoadmapIdPathParam:
       name: roadmapId
@@ -625,6 +630,7 @@ components:
       required: true
       schema:
         type: string
+        format: uuid
 
     ResourceIdPathParam:
       name: resourceId
@@ -632,6 +638,7 @@ components:
       required: true
       schema:
         type: string
+        format: uuid
 
     LinkKeyPathParam:
       name: linkKey
@@ -646,6 +653,7 @@ components:
       required: true
       schema:
         type: string
+        format: uuid
 
     ## Queries as Parameter
     JourneyIdQueryParam:
@@ -654,6 +662,7 @@ components:
       required: true
       schema:
         type: string
+        format: uuid
 
     RoadmapIdQueryParam:
       name: roadmapId
@@ -661,6 +670,7 @@ components:
       required: true
       schema:
         type: string
+        format: uuid
 
     PublicResourceTypeQueryParam:
       name: resourceType

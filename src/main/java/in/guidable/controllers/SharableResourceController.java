@@ -4,9 +4,10 @@ import in.guidable.api.SharableResourceApi;
 import in.guidable.model.PublicResourceType;
 import in.guidable.model.SharableResource;
 import in.guidable.model.SharableResourceResponse;
+import in.guidable.models.CustomerModel;
 import in.guidable.services.SharableResourceService;
 import in.guidable.util.AuthenticationUtil;
-import in.guidable.util.ValidationUtil;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,11 +23,10 @@ public class SharableResourceController implements SharableResourceApi {
   @Override
   @PreAuthorize("hasAuthority('ROLE_USER')")
   public ResponseEntity<SharableResourceResponse> enableShareLink(
-      String authorization, String resourceId, PublicResourceType resourceType) {
-    String userName = authenticationUtil.getUserFromToken(authorization);
-    ValidationUtil.validateId("ResourceId", resourceId);
+      String authorization, UUID resourceId, PublicResourceType resourceType) {
+    CustomerModel customerModel = authenticationUtil.getCustomerModelFromToken(authorization);
     SharableResource sharableResource =
-        sharableResourceService.enableShareLink(userName, resourceId, resourceType);
+        sharableResourceService.enableShareLink(customerModel, resourceId, resourceType);
 
     return ResponseEntity.ok(
         new SharableResourceResponse().objectType(resourceType).publicResource(sharableResource));
@@ -35,11 +35,10 @@ public class SharableResourceController implements SharableResourceApi {
   @Override
   @PreAuthorize("hasAuthority('ROLE_USER')")
   public ResponseEntity<SharableResourceResponse> disableShareLink(
-      String authorization, String resourceId, PublicResourceType resourceType) {
-    String userName = authenticationUtil.getUserFromToken(authorization);
-    ValidationUtil.validateId("ResourceId", resourceId);
+      String authorization, UUID resourceId, PublicResourceType resourceType) {
+    CustomerModel customerModel = authenticationUtil.getCustomerModelFromToken(authorization);
     SharableResource sharableResource =
-        sharableResourceService.disableShareLink(userName, resourceId, resourceType);
+        sharableResourceService.disableShareLink(customerModel, resourceId, resourceType);
 
     return ResponseEntity.ok(
         new SharableResourceResponse().objectType(resourceType).publicResource(sharableResource));

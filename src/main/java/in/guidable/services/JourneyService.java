@@ -6,6 +6,7 @@ import in.guidable.entities.Journey;
 import in.guidable.exceptions.RenderableExceptionGenerator;
 import in.guidable.model.CreateJourneyDetail;
 import in.guidable.model.UpdateJourneyDetail;
+import in.guidable.models.CustomerModel;
 import in.guidable.repositories.CustomerRepo;
 import in.guidable.repositories.JourneyRepo;
 import java.util.Date;
@@ -25,70 +26,51 @@ public class JourneyService {
   private final CustomerRepo customerRepo;
 
   @Transactional
-  public Journey createJourney(String userName, CreateJourneyDetail createJourneyDetail) {
+  public Journey createJourney(
+      CustomerModel customerModel, CreateJourneyDetail createJourneyDetail) {
     Customer customer =
         customerRepo
-            .findByCustomerUserName(userName)
+            .findById(customerModel.getUserId())
             .orElseThrow(
                 () ->
                     RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException(
-                        "Customer", userName));
+                        "Customer", customerModel.getUserId()));
     Journey journey =
         JourneyConverter.toJourneyEntity(createJourneyDetail)
             .toBuilder()
-            .originalAuthor(userName)
-            .updatedBy(userName)
+            .originalAuthor(customerModel.getUserName())
+            .updatedBy(customerModel.getUserName())
             .customer(customer)
             .build();
     journey.setCreationDate(new Date());
     return journeyRepo.save(journey);
   }
 
-  public Page<Journey> getJourneyList(String userName, Integer limit, Integer page) {
-    Customer customer =
-        customerRepo
-            .findByCustomerUserName(userName)
-            .orElseThrow(
-                () ->
-                    RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException(
-                        "Customer", userName));
+  public Page<Journey> getJourneyList(CustomerModel customerModel, Integer limit, Integer page) {
     Pageable paging = PageRequest.of(page, limit);
-    return journeyRepo
-        .findByCustomer(customer, paging)
-        .orElseThrow(
-            () ->
-                RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException(
-                    "Journey", userName));
+    return journeyRepo.findByCustomer_Id(customerModel.getUserId(), paging);
   }
 
-  public Journey getJourney(String userName, String journeyId) {
-    Customer customer =
-        customerRepo
-            .findByCustomerUserName(userName)
-            .orElseThrow(
-                () ->
-                    RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException(
-                        "Customer", userName));
+  public Journey getJourney(CustomerModel customerModel, UUID journeyId) {
     return journeyRepo
-        .findByCustomerAndId(customer, UUID.fromString(journeyId))
+        .findByCustomer_IdAndId(customerModel.getUserId(), journeyId)
         .orElseThrow(
             () ->
                 RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException(
-                    "Journey", userName));
+                    "Journey", journeyId));
   }
 
   @Transactional
   public Journey updateJourney(
-      String userName, String journeyId, UpdateJourneyDetail updateJourneyDetail) {
-    Journey journey = getJourney(userName, journeyId);
-    journey.setUpdatedBy(userName);
+      CustomerModel customerModel, UUID journeyId, UpdateJourneyDetail updateJourneyDetail) {
+    Journey journey = getJourney(customerModel, journeyId);
+    journey.setUpdatedBy(customerModel.getUserName());
     journey.setName(updateJourneyDetail.getName());
     journey.setDescription(updateJourneyDetail.getDescription());
     return journeyRepo.save(journey);
   }
 
-  public void deleteJourney(String userName, String journeyId) {
-    Journey journey = getJourney(userName, journeyId);
-    journeyRepo.deleteById(journey.getId());
+  public void deleteJourney(CustomerModel customerModel, UUID journeyId) {
+    journeyRepo.deleteByCustomerIdAndId(customerModel.getUserId(), journeyId);
   }
 }

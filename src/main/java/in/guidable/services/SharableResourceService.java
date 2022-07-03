@@ -1,13 +1,13 @@
 package in.guidable.services;
 
 import in.guidable.converters.RoadmapConverter;
-import in.guidable.entities.Customer;
 import in.guidable.entities.Roadmap;
 import in.guidable.entities.SharableEntity;
 import in.guidable.entities.SharableLinkKeyResourceMap;
 import in.guidable.exceptions.RenderableExceptionGenerator;
 import in.guidable.model.PublicResourceType;
 import in.guidable.model.SharableResource;
+import in.guidable.models.CustomerModel;
 import in.guidable.repositories.CustomerRepo;
 import in.guidable.repositories.JourneyRepo;
 import in.guidable.repositories.RoadmapRepo;
@@ -27,13 +27,8 @@ public class SharableResourceService {
 
   @Transactional
   public SharableResource enableShareLink(
-      String userName, String resourceId, PublicResourceType resourceType) {
-    Customer customer =
-        customerRepo
-            .findByCustomerUserName(userName)
-            .orElseThrow(() -> RenderableExceptionGenerator.generateInvalidUserException(userName));
-
-    SharableEntity sharableEntity = getSharableEntity(customer, resourceId, resourceType);
+      CustomerModel customerModel, UUID resourceId, PublicResourceType resourceType) {
+    SharableEntity sharableEntity = getSharableEntity(customerModel, resourceId, resourceType);
     if (sharableEntity.getPublicMetadata().getLinkKey() != null
         && !sharableEntity.getPublicMetadata().getLinkKey().isEmpty()) {
       sharableEntity.getPublicMetadata().setIsSharable(true);
@@ -45,7 +40,7 @@ public class SharableResourceService {
       sharableLinkKeyResourceMapRepo.save(
           SharableLinkKeyResourceMap.builder()
               .objectType(PublicResourceType.ROADMAP)
-              .customerId(customer.getId())
+              .customerId(customerModel.getUserId())
               .resourceId(sharableEntity.getId())
               .isEnabled(sharableEntity.getPublicMetadata().getIsSharable())
               .linkKey(sharableEntity.getPublicMetadata().getLinkKey())
@@ -56,13 +51,13 @@ public class SharableResourceService {
   }
 
   private SharableEntity getSharableEntity(
-      Customer customer, String resourceId, PublicResourceType resourceType) {
+      CustomerModel customerModel, UUID resourceId, PublicResourceType resourceType) {
     SharableEntity sharableEntity = null;
     switch (resourceType) {
       case ROADMAP:
         sharableEntity =
             roadmapRepo
-                .findByIdAndCustomerId(UUID.fromString(resourceId), customer.getId())
+                .findByCustomerIdAndId(customerModel.getUserId(), resourceId)
                 .orElseThrow(
                     () ->
                         RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException(
@@ -111,12 +106,8 @@ public class SharableResourceService {
 
   @Transactional
   public SharableResource disableShareLink(
-      String userName, String resourceId, PublicResourceType resourceType) {
-    Customer customer =
-        customerRepo
-            .findByCustomerUserName(userName)
-            .orElseThrow(() -> RenderableExceptionGenerator.generateInvalidUserException(userName));
-    SharableEntity sharableEntity = getSharableEntity(customer, resourceId, resourceType);
+      CustomerModel customerModel, UUID resourceId, PublicResourceType resourceType) {
+    SharableEntity sharableEntity = getSharableEntity(customerModel, resourceId, resourceType);
     sharableEntity.getPublicMetadata().setIsSharable(false);
 
     sharableLinkKeyResourceMapRepo.changeLinkStatus(sharableEntity.getId(), false);

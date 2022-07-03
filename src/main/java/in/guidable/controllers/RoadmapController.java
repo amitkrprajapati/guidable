@@ -6,10 +6,11 @@ import in.guidable.entities.Roadmap;
 import in.guidable.model.CreateRoadmapDetail;
 import in.guidable.model.RoadmapResponse;
 import in.guidable.model.UpdateRoadmapDetail;
+import in.guidable.models.CustomerModel;
 import in.guidable.services.RoadmapService;
 import in.guidable.util.AuthenticationUtil;
-import in.guidable.util.ValidationUtil;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,59 +31,44 @@ public class RoadmapController implements RoadmapsApi {
   public ResponseEntity<RoadmapResponse> createRoadmap(
       String authorization, CreateRoadmapDetail createRoadmapDetail) {
 
-    String userName = authenticationUtil.getUserFromToken(authorization);
-    ValidationUtil.validateId("JourneyId", createRoadmapDetail.getJourneyId());
-    Roadmap roadmap = roadmapService.createRoadmap(userName, createRoadmapDetail);
+    CustomerModel customerModel = authenticationUtil.getCustomerModelFromToken(authorization);
+    Roadmap roadmap = roadmapService.createRoadmap(customerModel, createRoadmapDetail);
     return new ResponseEntity<>(RoadmapConverter.toRoadmapResponse(roadmap), HttpStatus.CREATED);
   }
 
   @Override
   @PreAuthorize("hasAuthority('ROLE_USER')")
   public ResponseEntity<List<RoadmapResponse>> listRoadmap(
-      String authorization, String journeyId, Integer limit, Integer page) {
-    String userName = authenticationUtil.getUserFromToken(authorization);
-    ValidationUtil.validateId("JourneyId", journeyId);
-    Page<Roadmap> roadmapList = roadmapService.listRoadmap(userName, journeyId, limit, page);
+      String authorization, UUID journeyId, Integer limit, Integer page) {
+    CustomerModel customerModel = authenticationUtil.getCustomerModelFromToken(authorization);
+    Page<Roadmap> roadmapList = roadmapService.listRoadmap(customerModel, journeyId, limit, page);
     return ResponseEntity.ok(
         roadmapList.stream().map(RoadmapConverter::toRoadmapResponse).collect(Collectors.toList()));
   }
 
   @Override
   @PreAuthorize("hasAuthority('ROLE_USER')")
-  public ResponseEntity<RoadmapResponse> getRoadmap(String authorization, String roadmapId) {
-    String userName = authenticationUtil.getUserFromToken(authorization);
-    ValidationUtil.validateId("RoadmapId", roadmapId);
-    Roadmap roadmap = roadmapService.getRoadmap(userName, roadmapId);
+  public ResponseEntity<RoadmapResponse> getRoadmap(String authorization, UUID roadmapId) {
+    CustomerModel customerModel = authenticationUtil.getCustomerModelFromToken(authorization);
+    Roadmap roadmap = roadmapService.getRoadmap(customerModel, roadmapId);
     return ResponseEntity.ok(RoadmapConverter.toRoadmapResponse(roadmap));
   }
 
   @Override
   @PreAuthorize("hasAuthority('ROLE_USER')")
   public ResponseEntity<RoadmapResponse> updateRoadmap(
-      String authorization, String roadmapId, UpdateRoadmapDetail updateRoadmapDetail) {
-    String userName = authenticationUtil.getUserFromToken(authorization);
-    ValidationUtil.validateId("RoadmapId", roadmapId);
-    Roadmap roadmap = roadmapService.updateRoadmap(userName, roadmapId, updateRoadmapDetail);
+      String authorization, UUID roadmapId, UpdateRoadmapDetail updateRoadmapDetail) {
+    CustomerModel customerModel = authenticationUtil.getCustomerModelFromToken(authorization);
+    ;
+    Roadmap roadmap = roadmapService.updateRoadmap(customerModel, roadmapId, updateRoadmapDetail);
     return ResponseEntity.ok(RoadmapConverter.toRoadmapResponse(roadmap));
   }
 
   @Override
   @PreAuthorize("hasAuthority('ROLE_USER')")
-  public ResponseEntity<Void> deleteRoadmap(String authorization, String roadmapId) {
-    String userName = authenticationUtil.getUserFromToken(authorization);
-    ValidationUtil.validateId("RoadmapId", roadmapId);
-    roadmapService.deleteRoadmap(userName, roadmapId);
+  public ResponseEntity<Void> deleteRoadmap(String authorization, UUID roadmapId) {
+    CustomerModel customerModel = authenticationUtil.getCustomerModelFromToken(authorization);
+    roadmapService.deleteRoadmap(customerModel, roadmapId);
     return ResponseEntity.noContent().build();
   }
-  //    @Override
-  //    @PreAuthorize("hasAuthority('ROLE_USER')")
-  //    public ResponseEntity<RoadmapResponse> enableShareLink(String roadmapId) {
-  //        return ResponseEntity.ok(roadmapService.enableShareLink(roadmapId));
-  //    }
-  //
-  //    @Override
-  //    @PreAuthorize("hasAuthority('ROLE_USER')")
-  //    public ResponseEntity<RoadmapResponse> disableShareLink(String roadmapId) {
-  //        return ResponseEntity.ok(roadmapService.disableShareLink(roadmapId));
-  //    }
 }
