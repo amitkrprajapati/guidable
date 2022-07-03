@@ -296,7 +296,6 @@ paths:
       parameters:
         - $ref: "#/components/parameters/AuthorizationHeader"
         - $ref: "#/components/parameters/ResourceIdPathParam"
-
         - $ref: "#/components/parameters/PublicResourceTypeQueryParam"
       summary: Create a sharable public link
       operationId: enableShareLink
@@ -313,6 +312,8 @@ paths:
       parameters:
         - $ref: "#/components/parameters/AuthorizationHeader"
         - $ref: "#/components/parameters/ResourceIdPathParam"
+        - $ref: "#/components/parameters/PublicResourceTypeQueryParam"
+
       summary: Mark resource as private
       operationId: disableShareLink
       responses:
@@ -584,6 +585,13 @@ components:
         - ROADMAP
         - JOURNEY
 
+    SortByType:
+      type: string
+      enum:
+        - viewCount
+        - likeCount
+        - cloneCount
+
     SharableResourceResponse:
       type: object
       properties:
@@ -676,12 +684,8 @@ components:
         type: integer
 
     SharableResoureceSortByQueryParam:
-      name: sortby
+      name: sortBy
       in: query
       required: true
       schema:
-        type: string
-        enum:
-          - VIEWS
-          - LIKES
-          - CLONES
+        $ref: '#/components/schemas/SortByType'

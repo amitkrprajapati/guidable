@@ -44,7 +44,7 @@ public class RoadmapController implements RoadmapsApi {
     public ResponseEntity<List<RoadmapResponse>> listRoadmap(String authorization, String journeyId, Integer limit, Integer page) {
         String userName= authenticationUtil.getUserFromToken(authorization);
         ValidationUtil.validateId("JourneyId", journeyId);
-        Page<Roadmap> roadmapList =roadmapService.listRoadmap(userName, journeyId, limit, page);
+        Page<Roadmap> roadmapList = roadmapService.listRoadmap(userName, journeyId, limit, page);
         return ResponseEntity.ok(roadmapList
                 .stream()
                 .map(RoadmapConverter::toRoadmapResponse)
@@ -69,6 +69,7 @@ public class RoadmapController implements RoadmapsApi {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<Void> deleteRoadmap(String authorization, String roadmapId) {
         String userName= authenticationUtil.getUserFromToken(authorization);
         ValidationUtil.validateId("RoadmapId", roadmapId);

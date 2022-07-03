@@ -1,13 +1,21 @@
 package in.guidable.controllers;
 
 import in.guidable.api.PublicApi;
+import in.guidable.converters.RoadmapConverter;
+import in.guidable.entities.Roadmap;
+import in.guidable.model.JourneyResponse;
+import in.guidable.model.RoadmapResponse;
 import in.guidable.model.SharableResourceResponse;
+import in.guidable.model.SortByType;
 import in.guidable.services.SearchService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -27,4 +35,16 @@ public class SearchController implements PublicApi {
         }
 
     }
+
+    @Override
+    public ResponseEntity<List<RoadmapResponse>> getTopRoadmaps(Integer limit, Integer page, SortByType sortBy) {
+        Page<Roadmap> roadmapList = searchService.getTopPublicRoadmaps(limit, page, sortBy);
+
+        return ResponseEntity.ok(roadmapList
+                .stream()
+                .map(RoadmapConverter::toRoadmapResponse)
+                .collect(Collectors.toList()));
+    }
+
+
 }

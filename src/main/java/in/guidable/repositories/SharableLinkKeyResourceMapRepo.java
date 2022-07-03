@@ -1,6 +1,7 @@
 package in.guidable.repositories;
 
 import in.guidable.entities.SharableLinkKeyResourceMap;
+import in.guidable.exceptions.RenderableExceptionGenerator;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -17,13 +18,13 @@ import java.util.UUID;
 public interface SharableLinkKeyResourceMapRepo extends JpaRepository<SharableLinkKeyResourceMap, UUID> {
     @Modifying
     @Query("UPDATE SharableLinkKeyResourceMap linkMap SET linkMap.isEnabled = :status where linkMap.resourceId= :resourceId")
-    void changeLinkStatus(@Param("resourceId") String resourceId, Boolean status);
+    void changeLinkStatus(@Param("resourceId") UUID resourceId, Boolean status);
 
     Optional<SharableLinkKeyResourceMap> findByLinkKey(String linkKey);
 
     Collection<SharableLinkKeyResourceMap> findAllByLinkKey(String linkKey);
 
-    default String generateUniqueLinkKey() throws Exception {
+    default String generateUniqueLinkKey(){
         int itr = 0;
         int MAX_ITERATION_FOR_FINDING_LINK_KEY = 50;
         while(itr++ < MAX_ITERATION_FOR_FINDING_LINK_KEY) {
@@ -34,6 +35,6 @@ public interface SharableLinkKeyResourceMapRepo extends JpaRepository<SharableLi
                  return linkKey;
              }
         }
-        throw new Exception();
+        throw RenderableExceptionGenerator.generateInternalServerError();
     }
 }

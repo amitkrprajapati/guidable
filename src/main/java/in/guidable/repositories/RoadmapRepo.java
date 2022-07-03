@@ -18,8 +18,11 @@ import java.util.UUID;
 @Repository
 public interface RoadmapRepo extends JpaRepository<Roadmap, UUID> {
     Page<Roadmap> findAllByJourney(Journey journey, Pageable pageable);
-    Optional<Roadmap> findByIdAndCustomer(UUID roadmapId, Customer customer);
+    Optional<Roadmap> findByIdAndCustomerId(UUID roadmapId, UUID customerId);
 
     @Modifying
-    void deleteByIdAndCustomer(UUID roadmapId, Customer customer);
+    void deleteByIdAndCustomerId(UUID roadmapId, UUID customerId);
+
+    @Query("SELECT r FROM Roadmap r where r.publicMetadata.isSharable = true")
+    Page<Roadmap> getAllBySharedRoadmaps(Pageable pageable);
 }

@@ -3,6 +3,7 @@ package in.guidable.services;
 import in.guidable.converters.RoadmapConverter;
 import in.guidable.entities.Customer;
 import in.guidable.entities.Journey;
+import in.guidable.entities.PublicMetadata;
 import in.guidable.entities.Roadmap;
 import in.guidable.entities.SharableLinkKeyResourceMap;
 import in.guidable.exceptions.RenderableExceptionGenerator;
@@ -44,16 +45,17 @@ public class RoadmapService {
                 .orElseThrow(()-> RenderableExceptionGenerator.generateInvalidUserException(userName));
 
         Journey journey = journeyRepo
-                .findByIdAndCustomer(UUID.fromString(createRoadmapDetail.getJourneyId()), customer)
+                .findByCustomerAndId(customer,UUID.fromString(createRoadmapDetail.getJourneyId()))
                 .orElseThrow(()->RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException("Journey", createRoadmapDetail.getJourneyId()));
 
         Roadmap newRoadmap = RoadmapConverter.toRoadmapEntity(createRoadmapDetail)
                 .toBuilder()
                 .journey(journey)
-                .customer(customer)
+                .customerId(customer.getId())
                 .originalAuthor(customer.getCustomerUserName())
                 .updatedBy(customer.getCustomerUserName())
                 .build();
+        newRoadmap.setPublicMetadata(new PublicMetadata());
         return roadmapRepo.save(newRoadmap);
     }
 
@@ -63,7 +65,7 @@ public class RoadmapService {
                 .findByCustomerUserName(userName)
                 .orElseThrow(()-> RenderableExceptionGenerator.generateInvalidUserException(userName));
         Journey journey = journeyRepo
-                .findByIdAndCustomer(UUID.fromString(journeyId), customer)
+                .findByCustomerAndId(customer,UUID.fromString(journeyId))
                 .orElseThrow(()->RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException("Journey", journeyId));
         Pageable pageable = PageRequest.of(page, limit);
         return roadmapRepo.findAllByJourney(journey, pageable);
@@ -76,7 +78,7 @@ public class RoadmapService {
                 .orElseThrow(()-> RenderableExceptionGenerator.generateInvalidUserException(userName));
 
         return roadmapRepo
-                .findByIdAndCustomer(UUID.fromString(roadmapId), customer)
+                .findByIdAndCustomerId(UUID.fromString(roadmapId), customer.getId())
                 .orElseThrow(()->RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException("Roadmap", roadmapId));
     }
 
@@ -95,40 +97,7 @@ public class RoadmapService {
         Customer customer = customerRepo
                 .findByCustomerUserName(userName)
                 .orElseThrow(()-> RenderableExceptionGenerator.generateInvalidUserException(userName));
-        roadmapRepo.deleteByIdAndCustomer(UUID.fromString(roadmapId), customer);
-    }
-    @Transactional
-    public RoadmapResponse enableShareLink(String roadmapId) {
-        Roadmap roadmap = roadmapRepo.findById(UUID.fromString(roadmapId)).orElseThrow(EntityNotFoundException::new);
-        if (roadmap.getPublicMetadata().getLinkKey() != null) {
-            roadmap.getPublicMetadata().setIsSharable(true);
-            sharableLinkKeyResourceMapRepo.changeLinkStatus(roadmap.getId().toString(), true);
-        } else {
-            try {
-                String linkKey = sharableLinkKeyResourceMapRepo.generateUniqueLinkKey();
-                roadmap.getPublicMetadata().setLinkKey(linkKey);
-                roadmap.getPublicMetadata().setIsSharable(true);
-                sharableLinkKeyResourceMapRepo.save(SharableLinkKeyResourceMap
-                        .builder()
-                        .objectType(PublicResourceType.ROADMAP)
-                        .resourceId(roadmap.getId())
-                        .isEnabled(roadmap.getPublicMetadata().getIsSharable())
-//                        .customerId("not-defined-placeholder")
-                        .linkKey(roadmap.getPublicMetadata().getLinkKey())
-                        .build());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return RoadmapConverter.toRoadmapResponse(roadmap);
-    }
-
-    @Transactional
-    public RoadmapResponse disableShareLink(String roadmapId) {
-        Roadmap roadmap = roadmapRepo.findById(UUID.fromString(roadmapId)).orElseThrow(EntityNotFoundException::new);
-        roadmap.getPublicMetadata().setIsSharable(false);
-        sharableLinkKeyResourceMapRepo.changeLinkStatus(roadmap.getId().toString(), false);
-        return RoadmapConverter.toRoadmapResponse(roadmap);
+        roadmapRepo.deleteByIdAndCustomerId(UUID.fromString(roadmapId), customer.getId());
     }
 
 

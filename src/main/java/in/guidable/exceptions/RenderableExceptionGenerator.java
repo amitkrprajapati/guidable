@@ -26,7 +26,7 @@ public class RenderableExceptionGenerator {
         return new RenderableException(message, HttpStatus.UNAUTHORIZED);
     }
 
-    public static Exception generateInternalServerError() {
+    public static RenderableException generateInternalServerError() {
         String message = "Internal Server Error";
         return new RenderableException(message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
