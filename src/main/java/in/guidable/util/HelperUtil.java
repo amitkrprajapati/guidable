@@ -6,9 +6,8 @@ import java.util.stream.Collectors;
 
 public class HelperUtil {
 
-    private static <T> List<T> removeNull(List<T> arr) {
+  private static <T> List<T> removeNull(List<T> arr) {
 
-        return arr.stream().filter(Objects::nonNull).collect(Collectors.toList());
-    }
-
+    return arr.stream().filter(Objects::nonNull).collect(Collectors.toList());
+  }
 }
