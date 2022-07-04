@@ -1,11 +1,12 @@
 package in.guidable.exceptions;
 
+import java.util.UUID;
 import org.springframework.http.HttpStatus;
 
 public class RenderableExceptionGenerator {
 
   public static RenderableException generateEntityNotFoundOrNotAuthorizedException(
-      String resourceName, String resourceId) {
+      String resourceName, UUID resourceId) {
     String message =
         String.format("%s with id %s, not found or not authorized", resourceName, resourceId);
     return new RenderableException(message, HttpStatus.NOT_FOUND);

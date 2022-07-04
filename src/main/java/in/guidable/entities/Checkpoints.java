@@ -1,5 +1,6 @@
 package in.guidable.entities;
 
+import java.util.UUID;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,7 +28,6 @@ public class Checkpoints extends BaseEntity {
   @JoinColumn(name = "roadmap_id", referencedColumnName = "roadmap_id")
   private Roadmap roadmap;
 
-  @ManyToOne
-  @JoinColumn(name = "customer_id", referencedColumnName = "customer_Id")
-  private Customer customer;
+  @Column(length = 16)
+  private UUID customerId;
 }

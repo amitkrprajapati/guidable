@@ -1,13 +1,13 @@
 package in.guidable.services;
 
 import in.guidable.converters.RoadmapConverter;
-import in.guidable.entities.Customer;
 import in.guidable.entities.Journey;
 import in.guidable.entities.PublicMetadata;
 import in.guidable.entities.Roadmap;
 import in.guidable.exceptions.RenderableExceptionGenerator;
 import in.guidable.model.CreateRoadmapDetail;
 import in.guidable.model.UpdateRoadmapDetail;
+import in.guidable.models.CustomerModel;
 import in.guidable.repositories.CustomerRepo;
 import in.guidable.repositories.JourneyRepo;
 import in.guidable.repositories.RoadmapRepo;
@@ -31,15 +31,12 @@ public class RoadmapService {
   private final SharableResourceLikeRepo sharableResourceLikeRepo;
   private final SharableLinkKeyResourceMapRepo sharableLinkKeyResourceMapRepo;
 
-  public Roadmap createRoadmap(String userName, CreateRoadmapDetail createRoadmapDetail) {
-    Customer customer =
-        customerRepo
-            .findByCustomerUserName(userName)
-            .orElseThrow(() -> RenderableExceptionGenerator.generateInvalidUserException(userName));
+  public Roadmap createRoadmap(
+      CustomerModel customerModel, CreateRoadmapDetail createRoadmapDetail) {
 
     Journey journey =
         journeyRepo
-            .findByCustomerAndId(customer, UUID.fromString(createRoadmapDetail.getJourneyId()))
+            .findByCustomer_IdAndId(customerModel.getUserId(), createRoadmapDetail.getJourneyId())
             .orElseThrow(
                 () ->
                     RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException(
@@ -49,23 +46,20 @@ public class RoadmapService {
         RoadmapConverter.toRoadmapEntity(createRoadmapDetail)
             .toBuilder()
             .journey(journey)
-            .customerId(customer.getId())
-            .originalAuthor(customer.getCustomerUserName())
-            .updatedBy(customer.getCustomerUserName())
+            .customerId(customerModel.getUserId())
+            .originalAuthor(customerModel.getUserName())
+            .updatedBy(customerModel.getUserName())
             .build();
     newRoadmap.setPublicMetadata(new PublicMetadata());
     return roadmapRepo.save(newRoadmap);
   }
 
-  public Page<Roadmap> listRoadmap(String userName, String journeyId, Integer limit, Integer page) {
+  public Page<Roadmap> listRoadmap(
+      CustomerModel customerModel, UUID journeyId, Integer limit, Integer page) {
 
-    Customer customer =
-        customerRepo
-            .findByCustomerUserName(userName)
-            .orElseThrow(() -> RenderableExceptionGenerator.generateInvalidUserException(userName));
     Journey journey =
         journeyRepo
-            .findByCustomerAndId(customer, UUID.fromString(journeyId))
+            .findByCustomer_IdAndId(customerModel.getUserId(), journeyId)
             .orElseThrow(
                 () ->
                     RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException(
@@ -74,14 +68,9 @@ public class RoadmapService {
     return roadmapRepo.findAllByJourney(journey, pageable);
   }
 
-  public Roadmap getRoadmap(String userName, String roadmapId) {
-    Customer customer =
-        customerRepo
-            .findByCustomerUserName(userName)
-            .orElseThrow(() -> RenderableExceptionGenerator.generateInvalidUserException(userName));
-
+  public Roadmap getRoadmap(CustomerModel customerModel, UUID roadmapId) {
     return roadmapRepo
-        .findByIdAndCustomerId(UUID.fromString(roadmapId), customer.getId())
+        .findByCustomerIdAndId(customerModel.getUserId(), roadmapId)
         .orElseThrow(
             () ->
                 RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException(
@@ -90,21 +79,17 @@ public class RoadmapService {
 
   @Transactional
   public Roadmap updateRoadmap(
-      String userName, String roadmapId, UpdateRoadmapDetail updateRoadmapDetail) {
-    Roadmap roadmap = getRoadmap(userName, roadmapId);
+      CustomerModel customerModel, UUID roadmapId, UpdateRoadmapDetail updateRoadmapDetail) {
+    Roadmap roadmap = getRoadmap(customerModel, roadmapId);
 
-    roadmap.setUpdatedBy(userName);
+    roadmap.setUpdatedBy(customerModel.getUserName());
     roadmap.setName(updateRoadmapDetail.getName());
     roadmap.setDescription(updateRoadmapDetail.getDescription());
     return roadmapRepo.save(roadmap);
   }
 
   @Transactional
-  public void deleteRoadmap(String userName, String roadmapId) {
-    Customer customer =
-        customerRepo
-            .findByCustomerUserName(userName)
-            .orElseThrow(() -> RenderableExceptionGenerator.generateInvalidUserException(userName));
-    roadmapRepo.deleteByIdAndCustomerId(UUID.fromString(roadmapId), customer.getId());
+  public void deleteRoadmap(CustomerModel customerModel, UUID roadmapId) {
+    roadmapRepo.deleteByCustomerIdAndId(customerModel.getUserId(), roadmapId);
   }
 }

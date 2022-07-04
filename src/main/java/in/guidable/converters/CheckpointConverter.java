@@ -17,7 +17,7 @@ public class CheckpointConverter {
 
   public static CheckpointResponse toCheckPointModel(in.guidable.entities.Checkpoints checkpoints) {
     return new CheckpointResponse()
-        .id(checkpoints.getId().toString())
+        .id(checkpoints.getId())
         .name(checkpoints.getName())
         .shortDescription(checkpoints.getShortDescription())
         .detailedDescription(checkpoints.getDetailedDescription())

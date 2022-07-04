@@ -1,6 +1,5 @@
 package in.guidable.repositories;
 
-import in.guidable.entities.Customer;
 import in.guidable.entities.Journey;
 import java.util.Optional;
 import java.util.UUID;
@@ -10,7 +9,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface JourneyRepo extends JpaRepository<Journey, UUID> {
 
-  Optional<Page<Journey>> findByCustomer(Customer customer, Pageable pageable);
+  Page<Journey> findByCustomer_Id(UUID userId, Pageable pageable);
 
-  Optional<Journey> findByCustomerAndId(Customer customer, UUID journeyId);
+  Optional<Journey> findByCustomer_IdAndId(UUID userId, UUID journeyId);
+
+  void deleteByCustomerIdAndId(UUID userId, UUID journeyId);
 }

@@ -15,9 +15,9 @@ public class RoadmapConverter {
 
   public static RoadmapResponse toRoadmapResponse(Roadmap roadmap) {
     return new RoadmapResponse()
-        .id(roadmap.getId().toString())
+        .id(roadmap.getId())
         .name(roadmap.getName())
-        .journeyId(roadmap.getJourney().getId().toString())
+        .journeyId(roadmap.getJourney().getId())
         .description(roadmap.getDescription())
         .originalAuthor(roadmap.getOriginalAuthor())
         .updatedBy(roadmap.getUpdatedBy())
