@@ -8,7 +8,6 @@ import in.guidable.exceptions.RenderableExceptionGenerator;
 import in.guidable.model.CreateRoadmapDetail;
 import in.guidable.model.UpdateRoadmapDetail;
 import in.guidable.models.CustomerModel;
-import in.guidable.repositories.CustomerRepo;
 import in.guidable.repositories.JourneyRepo;
 import in.guidable.repositories.RoadmapRepo;
 import in.guidable.repositories.SharableLinkKeyResourceMapRepo;
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class RoadmapService {
-  private final CustomerRepo customerRepo;
   private final RoadmapRepo roadmapRepo;
   private final JourneyRepo journeyRepo;
   //    private final SharableResourceViewRepo sharableResourceViewRepo;
@@ -90,6 +88,10 @@ public class RoadmapService {
 
   @Transactional
   public void deleteRoadmap(CustomerModel customerModel, UUID roadmapId) {
-    roadmapRepo.deleteByCustomerIdAndId(customerModel.getUserId(), roadmapId);
+    if (roadmapRepo.deleteByCustomerIdAndId(customerModel.getUserId(), roadmapId) != 1) {
+      throw RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException(
+          "Roadmap", roadmapId);
+    }
+    ;
   }
 }

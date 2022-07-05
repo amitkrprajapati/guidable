@@ -18,7 +18,7 @@ public interface RoadmapRepo extends JpaRepository<Roadmap, UUID> {
   Optional<Roadmap> findByCustomerIdAndId(UUID customerId, UUID roadmapId);
 
   @Modifying
-  void deleteByCustomerIdAndId(UUID customerId, UUID roadmapId);
+  Long deleteByCustomerIdAndId(UUID customerId, UUID roadmapId);
 
   @Query("SELECT r FROM Roadmap r where r.publicMetadata.isSharable = true")
   Page<Roadmap> getAllBySharedRoadmaps(Pageable pageable);
