@@ -14,6 +14,7 @@ import in.guidable.repositories.VerificationTokenRepository;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
+import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -109,7 +110,8 @@ public class CustomerValidationService {
 
   public String resendVerificationToken(String userName, String prefixUrl) {
 
-    Customer customer = customerRepo.findByCustomerUserName(userName).orElseThrow();
+    Customer customer =
+        customerRepo.findByCustomerUserName(userName).orElseThrow(EntityNotFoundException::new);
 
     VerificationToken oldVerificationToken =
         verificationTokenRepository.getVerificationTokenByUserId(customer.getId());
