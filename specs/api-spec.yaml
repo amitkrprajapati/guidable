@@ -341,6 +341,7 @@ paths:
                 $ref: '#/components/schemas/SharableResourceResponse'
     delete:
       parameters:
+        - $ref: "#/components/parameters/AuthorizationHeader"
         - $ref: "#/components/parameters/ResourceIdPathParam"
         - $ref: "#/components/parameters/PublicResourceTypeQueryParam"
       summary: Unlike public resource

@@ -1,7 +1,7 @@
 package in.guidable.filter;
 
+import in.guidable.event.services.CustomUserDetailsService;
 import in.guidable.jwt.JwtUtil;
-import in.guidable.services.CustomUserDetailsService;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

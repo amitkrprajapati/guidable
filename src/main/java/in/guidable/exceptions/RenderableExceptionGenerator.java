@@ -12,6 +12,12 @@ public class RenderableExceptionGenerator {
     return new RenderableException(message, HttpStatus.NOT_FOUND);
   }
 
+  public static RenderableException generateEntityNotFoundOrNotAuthorizedException(
+      UUID resourceId) {
+    String message = String.format("Resource %s not found or not authorized", resourceId);
+    return new RenderableException(message, HttpStatus.NOT_FOUND);
+  }
+
   public static RenderableException generateInvalidUserException(String username) {
     String message = String.format("Invalid user %s", username);
     return new RenderableException(message, HttpStatus.NOT_FOUND);
@@ -30,5 +36,10 @@ public class RenderableExceptionGenerator {
   public static RenderableException generateInternalServerError() {
     String message = "Internal Server Error";
     return new RenderableException(message, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  public static RenderableException generateResourceExistsError(UUID resourceId) {
+    String message = String.format("Entry already exits for resource %s", resourceId);
+    return new RenderableException(message, HttpStatus.BAD_REQUEST);
   }
 }
