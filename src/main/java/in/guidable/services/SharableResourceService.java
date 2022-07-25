@@ -4,6 +4,7 @@ import in.guidable.converters.RoadmapConverter;
 import in.guidable.entities.Roadmap;
 import in.guidable.entities.SharableEntity;
 import in.guidable.entities.SharableLinkKeyResourceMap;
+import in.guidable.entities.SharableResourceLike;
 import in.guidable.exceptions.RenderableExceptionGenerator;
 import in.guidable.model.PublicResourceType;
 import in.guidable.model.SharableResource;
@@ -12,6 +13,7 @@ import in.guidable.repositories.CustomerRepo;
 import in.guidable.repositories.JourneyRepo;
 import in.guidable.repositories.RoadmapRepo;
 import in.guidable.repositories.SharableLinkKeyResourceMapRepo;
+import in.guidable.repositories.SharableResourceLikeRepo;
 import java.util.UUID;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,8 @@ public class SharableResourceService {
   private final RoadmapRepo roadmapRepo;
   private final JourneyRepo journeyRepo;
   private final SharableLinkKeyResourceMapRepo sharableLinkKeyResourceMapRepo;
+
+  private final SharableResourceLikeRepo sharableResourceLikeRepo;
 
   @Transactional
   public SharableResource enableShareLink(
@@ -113,5 +117,40 @@ public class SharableResourceService {
     sharableLinkKeyResourceMapRepo.changeLinkStatus(sharableEntity.getId(), false);
     sharableEntity = saveSharableEntity(sharableEntity, resourceType);
     return getSharableResourceResponse(sharableEntity, resourceType);
+  }
+
+  @Transactional
+  public SharableResource likeResource(
+      CustomerModel customerModel, UUID resourceId, PublicResourceType resourceType) {
+
+    UUID customerId = customerModel.getUserId();
+    if (sharableResourceLikeRepo.getCustomerLikeStatus(customerId, resourceId).isPresent()) {
+      throw RenderableExceptionGenerator.generateResourceExistsError(resourceId);
+    }
+
+    SharableEntity sharableEntity = getSharableEntity(customerModel, resourceId, resourceType);
+    long likeCount = sharableEntity.getPublicMetadata().getLikeCount();
+    sharableEntity.getPublicMetadata().setLikeCount(likeCount + 1);
+    sharableEntity = saveSharableEntity(sharableEntity, resourceType);
+    // sharableResourceLikeRepo.save(new SharableResourceLike(customerId, resourceId));
+    sharableResourceLikeRepo.save(
+        SharableResourceLike.builder().customerId(customerId).resourceId(resourceId).build());
+
+    return getSharableResourceResponse(sharableEntity, resourceType);
+  }
+
+  @Transactional
+  public void unlikeResource(
+      CustomerModel customerModel, UUID resourceId, PublicResourceType resourceType) {
+
+    UUID customerId = customerModel.getUserId();
+    if (sharableResourceLikeRepo.deleteByCustomerIdAndResourceId(customerId, resourceId) != 1) {
+      throw RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException(resourceId);
+    }
+
+    SharableEntity sharableEntity = getSharableEntity(customerModel, resourceId, resourceType);
+    long likeCount = sharableEntity.getPublicMetadata().getLikeCount();
+    sharableEntity.getPublicMetadata().setLikeCount(likeCount - 1);
+    saveSharableEntity(sharableEntity, resourceType);
   }
 }

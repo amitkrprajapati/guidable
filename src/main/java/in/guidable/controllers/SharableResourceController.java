@@ -43,4 +43,27 @@ public class SharableResourceController implements SharableResourceApi {
     return ResponseEntity.ok(
         new SharableResourceResponse().objectType(resourceType).publicResource(sharableResource));
   }
+
+  @Override
+  @PreAuthorize("hasAuthority('ROLE_USER')")
+  public ResponseEntity<SharableResourceResponse> likeResource(
+      String authorization, UUID resourceId, PublicResourceType resourceType) {
+    CustomerModel customerModel = authenticationUtil.getCustomerModelFromToken(authorization);
+    SharableResource sharableResource =
+        sharableResourceService.likeResource(customerModel, resourceId, resourceType);
+
+    return ResponseEntity.ok(
+        new SharableResourceResponse().objectType(resourceType).publicResource(sharableResource));
+  }
+
+  @Override
+  @PreAuthorize("hasAuthority('ROLE_USER')")
+  public ResponseEntity<Void> unlikeResource(
+      String authorization, UUID resourceId, PublicResourceType resourceType) {
+    CustomerModel customerModel = authenticationUtil.getCustomerModelFromToken(authorization);
+
+    sharableResourceService.unlikeResource(customerModel, resourceId, resourceType);
+
+    return ResponseEntity.noContent().build();
+  }
 }
