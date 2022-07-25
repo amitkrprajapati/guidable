@@ -1,4 +1,4 @@
-package in.guidable.event.services;
+package in.guidable.services;
 
 import in.guidable.converters.JourneyConverter;
 import in.guidable.entities.Customer;

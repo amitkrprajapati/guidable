@@ -2,7 +2,7 @@ package in.guidable.event.listener;
 
 import in.guidable.entities.Customer;
 import in.guidable.event.RegistrationCompleteEvent;
-import in.guidable.event.services.CustomerValidationService;
+import in.guidable.services.CustomerValidationService;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

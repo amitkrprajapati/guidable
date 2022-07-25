@@ -1,4 +1,4 @@
-package in.guidable.event.services;
+package in.guidable.services;
 
 import in.guidable.converters.RoadmapConverter;
 import in.guidable.entities.Journey;

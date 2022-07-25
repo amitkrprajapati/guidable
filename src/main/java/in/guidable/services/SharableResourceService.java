@@ -1,4 +1,4 @@
-package in.guidable.event.services;
+package in.guidable.services;
 
 import in.guidable.converters.RoadmapConverter;
 import in.guidable.entities.Roadmap;
@@ -131,8 +131,11 @@ public class SharableResourceService {
     SharableEntity sharableEntity = getSharableEntity(customerModel, resourceId, resourceType);
     long likeCount = sharableEntity.getPublicMetadata().getLikeCount();
     sharableEntity.getPublicMetadata().setLikeCount(likeCount + 1);
-    sharableResourceLikeRepo.save(new SharableResourceLike(customerId, resourceId));
     sharableEntity = saveSharableEntity(sharableEntity, resourceType);
+    // sharableResourceLikeRepo.save(new SharableResourceLike(customerId, resourceId));
+    sharableResourceLikeRepo.save(
+        SharableResourceLike.builder().customerId(customerId).resourceId(resourceId).build());
+
     return getSharableResourceResponse(sharableEntity, resourceType);
   }
 

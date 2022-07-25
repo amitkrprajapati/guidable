@@ -1,11 +1,11 @@
 package in.guidable.controllers;
 
 import in.guidable.api.SharableResourceApi;
-import in.guidable.event.services.SharableResourceService;
 import in.guidable.model.PublicResourceType;
 import in.guidable.model.SharableResource;
 import in.guidable.model.SharableResourceResponse;
 import in.guidable.models.CustomerModel;
+import in.guidable.services.SharableResourceService;
 import in.guidable.util.AuthenticationUtil;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
