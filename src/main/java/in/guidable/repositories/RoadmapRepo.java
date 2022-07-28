@@ -22,4 +22,6 @@ public interface RoadmapRepo extends JpaRepository<Roadmap, UUID> {
 
   @Query("SELECT r FROM Roadmap r where r.publicMetadata.isSharable = true")
   Page<Roadmap> getAllBySharedRoadmaps(Pageable pageable);
+
+
 }

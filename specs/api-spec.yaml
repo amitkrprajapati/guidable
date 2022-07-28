@@ -592,9 +592,9 @@ components:
     SortByType:
       type: string
       enum:
-        - viewCount
-        - likeCount
-        - cloneCount
+        - VIEWCOUNT
+        - LIKECOUNT
+        - CLONECOUNT
 
     SharableResourceResponse:
       type: object

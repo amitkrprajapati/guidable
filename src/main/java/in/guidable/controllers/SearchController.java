@@ -1,8 +1,11 @@
 package in.guidable.controllers;
 
 import in.guidable.api.PublicApi;
+import in.guidable.converters.JourneyConverter;
 import in.guidable.converters.RoadmapConverter;
+import in.guidable.entities.Journey;
 import in.guidable.entities.Roadmap;
+import in.guidable.model.JourneyResponse;
 import in.guidable.model.RoadmapResponse;
 import in.guidable.model.SharableResourceResponse;
 import in.guidable.model.SortByType;
@@ -38,5 +41,15 @@ public class SearchController implements PublicApi {
 
     return ResponseEntity.ok(
         roadmapList.stream().map(RoadmapConverter::toRoadmapResponse).collect(Collectors.toList()));
+  }
+
+  @Override
+  public ResponseEntity<List<JourneyResponse>> getTopJourneys(Integer limit, Integer page, SortByType sortBy) {
+    Page<Journey> journeyList = searchService.getTopPublicJourneys(limit, page, sortBy);
+
+    return ResponseEntity.ok(
+            journeyList.getContent().stream()
+                    .map(JourneyConverter::toJourneyResponse)
+                    .collect(Collectors.toList()));
   }
 }
