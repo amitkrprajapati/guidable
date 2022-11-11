@@ -28,7 +28,8 @@ public class SecurityConfig {
     "/validation/**",
     "/swagger-ui/**",
     "/v3/api-docs/**",
-    "/validation/reGenerateVerificationToken"
+    "/validation/reGenerateVerificationToken",
+    "/public/**"
   };
 
   @Bean

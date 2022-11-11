@@ -1,11 +1,14 @@
 package in.guidable.services;
 
+import in.guidable.converters.JourneyConverter;
 import in.guidable.converters.RoadmapConverter;
+import in.guidable.entities.Journey;
 import in.guidable.entities.Roadmap;
 import in.guidable.entities.SharableLinkKeyResourceMap;
 import in.guidable.model.PublicResourceType;
 import in.guidable.model.SharableResourceResponse;
 import in.guidable.model.SortByType;
+import in.guidable.repositories.JourneyRepo;
 import in.guidable.repositories.RoadmapRepo;
 import in.guidable.repositories.SharableLinkKeyResourceMapRepo;
 import javax.persistence.EntityNotFoundException;
@@ -21,6 +24,7 @@ import org.springframework.stereotype.Service;
 public class SearchService {
   private final SharableLinkKeyResourceMapRepo sharableLinkKeyResourceMapRepo;
   private final RoadmapRepo roadmapRepo;
+  private final JourneyRepo journeyRepo;
 
   public SharableResourceResponse findByLinkKey(String linkKey) {
 
@@ -39,8 +43,13 @@ public class SearchService {
             .publicResource(RoadmapConverter.toRoadmapResponse(roadmap));
 
       } else if (linkKeyMap.getObjectType() == PublicResourceType.JOURNEY) {
-        // TODO : get roadmap Collection
-        throw new EntityNotFoundException();
+        Journey journey =
+                journeyRepo
+                        .findById(linkKeyMap.getResourceId())
+                        .orElseThrow(EntityNotFoundException::new);
+        return new SharableResourceResponse()
+                .objectType(PublicResourceType.JOURNEY)
+                .publicResource(JourneyConverter.toJourneyResponse(journey));
       }
     }
     throw new EntityNotFoundException();
@@ -49,5 +58,10 @@ public class SearchService {
   public Page<Roadmap> getTopPublicRoadmaps(Integer limit, Integer page, SortByType sortBy) {
     Pageable pageable = PageRequest.of(page, limit, Sort.by("publicMetadata." + sortBy.getValue()));
     return roadmapRepo.getAllBySharedRoadmaps(pageable);
+  }
+
+  public Page<Journey> getTopPublicJourneys(Integer limit, Integer page, SortByType sortBy) {
+    Pageable pageable = PageRequest.of(page, limit, Sort.by("publicMetadata." + sortBy.getValue()));
+    return journeyRepo.getAllBySharedJourneys(pageable);
   }
 }

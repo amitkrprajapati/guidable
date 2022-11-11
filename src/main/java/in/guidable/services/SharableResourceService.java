@@ -1,6 +1,8 @@
 package in.guidable.services;
 
+import in.guidable.converters.JourneyConverter;
 import in.guidable.converters.RoadmapConverter;
+import in.guidable.entities.Journey;
 import in.guidable.entities.Roadmap;
 import in.guidable.entities.SharableEntity;
 import in.guidable.entities.SharableLinkKeyResourceMap;
@@ -43,7 +45,7 @@ public class SharableResourceService {
       sharableEntity.getPublicMetadata().setIsSharable(true);
       sharableLinkKeyResourceMapRepo.save(
           SharableLinkKeyResourceMap.builder()
-              .objectType(PublicResourceType.ROADMAP)
+              .objectType(resourceType)
               .customerId(customerModel.getUserId())
               .resourceId(sharableEntity.getId())
               .isEnabled(sharableEntity.getPublicMetadata().getIsSharable())
@@ -68,7 +70,10 @@ public class SharableResourceService {
                             "Roadmap", resourceId));
         break;
       case JOURNEY:
-        // TODO
+        sharableEntity =
+                journeyRepo.findByCustomer_IdAndId(customerModel.getUserId(),resourceId)
+                        .orElseThrow(() -> RenderableExceptionGenerator.generateEntityNotFoundOrNotAuthorizedException(
+                                "Journey", resourceId));
         break;
 
       default:
@@ -85,7 +90,7 @@ public class SharableResourceService {
         savedEntity = roadmapRepo.save((Roadmap) sharableEntity);
         break;
       case JOURNEY:
-        //                journeyRepo.save((Journey) sharableEntity);
+        savedEntity = journeyRepo.save((Journey) sharableEntity);
         break;
       default:
         throw RenderableExceptionGenerator.generateInternalServerError();
@@ -101,6 +106,7 @@ public class SharableResourceService {
         sharableResource = RoadmapConverter.toRoadmapResponse((Roadmap) sharableEntity);
         break;
       case JOURNEY:
+        sharableResource = JourneyConverter.toJourneyResponse((Journey) sharableEntity);
         break;
       default:
         throw RenderableExceptionGenerator.generateInternalServerError();
